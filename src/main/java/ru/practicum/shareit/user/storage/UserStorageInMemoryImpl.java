@@ -30,8 +30,13 @@ public class UserStorageInMemoryImpl implements UserStorage {
 
     @Override
     public UserDto updateUser(UserDto userDto, int id) {
-        userHashMap.remove(id);
-        userHashMap.put(id, userDto);
+        if (userDto.getName() != null) {
+            userHashMap.get(id).setName(userDto.getName());
+        }
+        if (userDto.getEmail() != null) {
+            userHashMap.get(id).setEmail(userDto.getEmail());
+        }
+        System.out.println(userHashMap.get(id));
         return userHashMap.get(id);
     }
 

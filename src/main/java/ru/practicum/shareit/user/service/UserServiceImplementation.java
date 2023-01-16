@@ -6,7 +6,6 @@ import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
@@ -29,11 +28,10 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User updateUser(UserDto userDto, int id) {
-        userDto.setId(id);
+    public UserDto updateUser(UserDto userDto, int id) {
         checkIfIdExists(id);
         checkIfEmailExists(userDto.getEmail());
-        return UserMapper.DtoToUser(userStorage.updateUser(userDto, id));
+        return userStorage.updateUser(userDto, id);
     }
 
     @Override

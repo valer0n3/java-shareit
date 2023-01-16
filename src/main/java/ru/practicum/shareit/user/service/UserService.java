@@ -10,7 +10,7 @@ public interface UserService {
 
     UserDto deleteUser(int id);
 
-    User updateUser(UserDto userDto, int id);
+    UserDto updateUser(UserDto userDto, int id);
 
     List<User> getAllUsers();
 
