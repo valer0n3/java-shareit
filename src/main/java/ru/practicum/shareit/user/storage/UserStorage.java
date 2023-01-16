@@ -4,16 +4,20 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserStorage {
     UserDto createUser(UserDto userDto);
 
-    User deleteUser(int id);
+    Optional<UserDto> deleteUser(int id);
 
-    User updateUser(UserDto userDto);
+    UserDto updateUser(UserDto userDto);
 
     List<User> getAllUsers();
 
-    User getUserById(int id);
+    Optional<UserDto> getUserById(int id);
+
     boolean checkIfEmailAlreadyExists(String mail);
+
+    boolean checkIfIdAlreadyExists(int id);
 }

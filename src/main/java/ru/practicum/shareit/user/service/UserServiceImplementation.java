@@ -2,8 +2,10 @@ package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
@@ -15,30 +17,44 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        if (userStorage.checkIfEmailAlreadyExists(userDto.getEmail())) {
-            throw new RuntimeException("TODO add esception");//TODO add esception
-        } else {
-           return userStorage.createUser(userDto);
-        }
+        checkIfEmailExists(userDto.getEmail());
+        return userStorage.createUser(userDto);
     }
 
     @Override
-    public User deleteUser(int id) {
-        return userStorage.deleteUser(id);
+    public UserDto deleteUser(int id) {
+        return userStorage.deleteUser(id)
+                .orElseThrow(() -> new IncorrectInputException(String.format("Id %i is not existed", id)));
     }
 
     @Override
     public User updateUser(UserDto userDto) {
-        return userStorage.updateUser(userDto);
+        checkIfIdExists(userDto.getId());
+        checkIfEmailExists(userDto.getEmail());
+        return UserMapper.DtoToUser(userStorage.updateUser(userDto));
     }
 
     @Override
     public List<User> getAllUsers() {
-        return getAllUsers();
+        return userStorage.getAllUsers();
     }
 
     @Override
-    public User getUserById(int id) {
-        return getUserById(id);
+    public UserDto getUserById(int id) {
+        checkIfIdExists(id);
+        return userStorage.getUserById(id)
+                .orElseThrow(() -> new IncorrectInputException(String.format("Id %i is not existed", id)));
+    }
+
+    public void checkIfIdExists(int id) {
+        if (!userStorage.checkIfIdAlreadyExists(id)) {
+            throw new IncorrectInputException(String.format("Id %i is not existed", id));
+        }
+    }
+
+    public void checkIfEmailExists(String email) {
+        if (userStorage.checkIfEmailAlreadyExists(email)) {
+            throw new IncorrectInputException(String.format("Email %s is already existed!", email));
+        }
     }
 }

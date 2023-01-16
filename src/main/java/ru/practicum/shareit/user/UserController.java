@@ -31,7 +31,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public User deleteUser(@PathVariable int id) {
-        return userService.deleteUser(id);
+        return UserMapper.DtoToUser(userService.deleteUser(id));
     }
 
     @PutMapping
@@ -46,6 +46,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable int id) {
-        return userService.getUserById(id);
+        return UserMapper.DtoToUser(userService.getUserById(id));
     }
 }
