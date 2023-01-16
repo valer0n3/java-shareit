@@ -11,7 +11,7 @@ public interface UserStorage {
 
     Optional<UserDto> deleteUser(int id);
 
-    UserDto updateUser(UserDto userDto);
+    UserDto updateUser(UserDto userDto, int id);
 
     List<User> getAllUsers();
 

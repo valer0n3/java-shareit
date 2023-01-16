@@ -29,9 +29,10 @@ public class UserStorageInMemoryImpl implements UserStorage {
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto) {
-        userHashMap.remove(userDto.getId());
-        return userHashMap.put(userDto.getId(), userDto);
+    public UserDto updateUser(UserDto userDto, int id) {
+        userHashMap.remove(id);
+        userHashMap.put(id, userDto);
+        return userHashMap.get(id);
     }
 
     @Override

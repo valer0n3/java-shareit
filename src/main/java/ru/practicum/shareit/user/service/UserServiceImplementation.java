@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -28,10 +29,11 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User updateUser(UserDto userDto) {
-        checkIfIdExists(userDto.getId());
+    public User updateUser(UserDto userDto, int id) {
+        userDto.setId(id);
+        checkIfIdExists(id);
         checkIfEmailExists(userDto.getEmail());
-        return UserMapper.DtoToUser(userStorage.updateUser(userDto));
+        return UserMapper.DtoToUser(userStorage.updateUser(userDto, id));
     }
 
     @Override
@@ -54,7 +56,7 @@ public class UserServiceImplementation implements UserService {
 
     public void checkIfEmailExists(String email) {
         if (userStorage.checkIfEmailAlreadyExists(email)) {
-            throw new IncorrectInputException(String.format("Email %s is already existed!", email));
+            throw new DuplicatedDataException(String.format("Email %s is already existed!", email));
         }
     }
 }

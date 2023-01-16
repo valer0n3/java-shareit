@@ -22,4 +22,11 @@ public class ErrorHandler {
         log.warn("Error 404: " + e.getMessage());
         return new Exception("ObjectNotFoundException ", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Exception duplicatedDataException(final DuplicatedDataException e) {
+        log.warn("Error 409: " + e.getMessage());
+        return new Exception("DuplicatedDataException ", e.getMessage());
+    }
 }
