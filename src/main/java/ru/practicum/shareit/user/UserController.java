@@ -26,7 +26,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        return userService.createUser(UserMapper.toUserDto(user));
+        return UserMapper.DtoToUser(userService.createUser(UserMapper.toUserDto(user)));
     }
 
     @DeleteMapping("/{id}")

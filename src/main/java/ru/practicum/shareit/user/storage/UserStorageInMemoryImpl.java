@@ -4,11 +4,17 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
+import java.util.Map;
 
-public class UserStorageInMemoryImpl implements UserStorage{
+public class UserStorageInMemoryImpl implements UserStorage {
+    private Map<Integer, UserDto> userHashMap;
+    private static int id;
+
     @Override
-    public User createUser(UserDto userDto) {
-        return null;
+    public UserDto createUser(UserDto userDto) {
+        userDto.setId(idGenerator());
+        userHashMap.put(userDto.getId(), userDto);
+        return userDto;
     }
 
     @Override
@@ -29,5 +35,14 @@ public class UserStorageInMemoryImpl implements UserStorage{
     @Override
     public User getUserById(int id) {
         return null;
+    }
+
+    @Override
+    public boolean checkIfEmailAlreadyExists(String mail) {
+        return userHashMap.containsValue(mail);
+    }
+
+    public int idGenerator() {
+        return ++id;
     }
 }

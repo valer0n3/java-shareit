@@ -6,7 +6,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import java.util.List;
 
 public interface UserStorage {
-    User createUser(UserDto userDto);
+    UserDto createUser(UserDto userDto);
 
     User deleteUser(int id);
 
@@ -15,4 +15,5 @@ public interface UserStorage {
     List<User> getAllUsers();
 
     User getUserById(int id);
+    boolean checkIfEmailAlreadyExists(String mail);
 }

@@ -14,8 +14,12 @@ public class UserServiceImplementation implements UserService {
     private final UserStorage userStorage;
 
     @Override
-    public User createUser(UserDto userDto) {
-        return userStorage.createUser(userDto);
+    public UserDto createUser(UserDto userDto) {
+        if (userStorage.checkIfEmailAlreadyExists(userDto.getEmail())) {
+            throw new RuntimeException("TODO add esception");//TODO add esception
+        } else {
+           return userStorage.createUser(userDto);
+        }
     }
 
     @Override
