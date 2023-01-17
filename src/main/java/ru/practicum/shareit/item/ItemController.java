@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
@@ -18,7 +20,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/items")
+@AllArgsConstructor
 public class ItemController {
+    private final ItemService itemservice;
+
     @PostMapping
     public ItemDto addNewItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int userID) {
         return null;
