@@ -14,4 +14,6 @@ public interface ItemStrorage {
     List<ItemDto> getAllItemsForOwner(int userID);
 
     List<ItemDto> searchItem(String text);
+
+    boolean checkIfIdAlreadyExists(int id);
 }
