@@ -1,8 +1,8 @@
 package ru.practicum.shareit.user.dto.mapper;
 
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.dto.UserPostDto;
+import ru.practicum.shareit.user.model.User;
 
 public class UserMapper {
     public static UserPostDto mapUserToUserPostDTO(User user) {

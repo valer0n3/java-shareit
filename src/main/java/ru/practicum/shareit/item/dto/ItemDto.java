@@ -20,6 +20,6 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
-   // private int owner;
+    // private int owner;
     private ItemRequest request;
 }

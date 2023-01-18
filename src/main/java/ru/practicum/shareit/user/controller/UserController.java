@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.dto.UserPostDto;
-import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
