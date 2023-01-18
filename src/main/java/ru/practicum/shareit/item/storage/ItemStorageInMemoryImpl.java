@@ -2,12 +2,14 @@ package ru.practicum.shareit.item.storage;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.storage.UserStorageInMemoryImpl;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -42,7 +44,8 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
 
     @Override
     public Item getItemById(int itemId) {
-        return null;
+        return Optional.ofNullable(itemHashMap.get(itemId))
+                .orElseThrow(() -> new IncorrectInputException(String.format("Id %d is not existed", itemId)));
     }
 
     @Override
@@ -56,8 +59,8 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
     public List<Item> searchItem(String text) {
         return itemHashMap.values().stream()
                 .filter(Item::getAvailable)
-                .filter((item) -> item.getName().equalsIgnoreCase(text.trim()) ||
-                        item.getDescription().equalsIgnoreCase(text.trim()))
+                .filter((item) -> item.getName().toLowerCase().contains(text.trim().toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(text.trim().toLowerCase()))
                 .collect(Collectors.toList());
     }
 

@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStrorage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,7 @@ public class ItemServiceImplementation implements ItemService {
     @Override
     public List<ItemDto> searchItem(String text) {
         if (text.isBlank()) {
-            throw new IncorrectInputException("Incorrect data input for search!");
+            return new ArrayList<>();
         }
         return itemStorage.searchItem(text).stream()
                 .map((ItemMapper::mapItemToItemDto)).collect(Collectors.toList());

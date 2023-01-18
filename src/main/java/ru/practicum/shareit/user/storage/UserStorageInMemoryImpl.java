@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.user.User;
 
 import java.util.ArrayList;
@@ -8,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class UserStorageInMemoryImpl implements UserStorage {
@@ -27,8 +27,9 @@ public class UserStorageInMemoryImpl implements UserStorage {
     }
 
     @Override
-    public Optional<User> deleteUser(int id) {
-        return Optional.ofNullable(userHashMap.remove(id));
+    public User deleteUser(int id) {
+        return Optional.ofNullable(userHashMap.remove(id))
+                .orElseThrow(() -> new IncorrectInputException(String.format("Id %d is not existed", id)));
     }
 
     @Override
@@ -49,8 +50,9 @@ public class UserStorageInMemoryImpl implements UserStorage {
     }
 
     @Override
-    public Optional<User> getUserById(int id) {
-        return Optional.ofNullable(userHashMap.get(id));
+    public User getUserById(int id) {
+        return Optional.ofNullable(userHashMap.get(id))
+                .orElseThrow(() -> new IncorrectInputException(String.format("Id %d is not existed", id)));
     }
 
     @Override

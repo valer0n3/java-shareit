@@ -27,8 +27,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserPostDto deleteUser(int id) {
-        return UserMapper.mapUserToUserPostDTO(userStorage.deleteUser(id)
-                .orElseThrow(() -> new IncorrectInputException(String.format("Id %d is not existed", id))));
+        return UserMapper.mapUserToUserPostDTO(userStorage.deleteUser(id));
     }
 
     @Override
@@ -48,8 +47,7 @@ public class UserServiceImplementation implements UserService {
     @Override
     public UserPostDto getUserById(int id) {
         checkIfIdExists(id);
-        return UserMapper.mapUserToUserPostDTO(userStorage.getUserById(id)
-                .orElseThrow(() -> new IncorrectInputException(String.format("Id %d is not existed", id))));
+        return UserMapper.mapUserToUserPostDTO(userStorage.getUserById(id));
     }
 
     public void checkIfIdExists(int id) {

@@ -8,13 +8,13 @@ import java.util.Optional;
 public interface UserStorage {
     User createUser(User user);
 
-    Optional<User> deleteUser(int id);
+    User deleteUser(int id);
 
     User updateUser(User user, int id);
 
     List<User> getAllUsers();
 
-    Optional<User> getUserById(int id);
+    User getUserById(int id);
 
     boolean checkIfEmailAlreadyExists(String mail);
 

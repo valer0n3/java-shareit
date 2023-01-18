@@ -28,7 +28,6 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addNewItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int userID) {
-        System.out.println("******** " + userID);
         return itemservice.addNewItem(itemDto, userID);
     }
 
