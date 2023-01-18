@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStrorage;
@@ -23,9 +24,9 @@ public class ItemServiceImplementation implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, int userId, int itemId) {
-        Item item = ItemMapper.mapItemDtoToItem(itemDto);
-        return ItemMapper.mapItemToItemDto(itemStorage.updateItem(item, userId, itemId));
+    public ItemPatchDto updateItem(ItemPatchDto itemPatchDto, int userId, int itemId) {
+        Item item = ItemMapper.mapItemPatchDtoToItem(itemPatchDto);
+        return ItemMapper.mapItemToItemPatchDto(itemStorage.updateItem(item, userId, itemId));
     }
 
     @Override

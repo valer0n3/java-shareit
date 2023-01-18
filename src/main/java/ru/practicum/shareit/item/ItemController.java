@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -30,9 +31,9 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestBody ItemDto itemDto,
-                              @RequestHeader("X-Sharer-User-Id") int userId,
-                              @PathVariable int itemId) {
+    public ItemPatchDto updateItem(@RequestBody ItemPatchDto itemPatchDto,
+                                   @RequestHeader("X-Sharer-User-Id") int userId,
+                                   @PathVariable int itemId) {
         return null;
     }
 
