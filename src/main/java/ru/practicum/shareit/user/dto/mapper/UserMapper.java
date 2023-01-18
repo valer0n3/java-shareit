@@ -14,8 +14,8 @@ public class UserMapper {
     }
 
     public static User mapUserPostDtoToUser(UserPostDto userPostDto) {
-        return User.builder().
-                id(userPostDto.getId())
+        return User.builder()
+                .id(userPostDto.getId())
                 .name(userPostDto.getName())
                 .email(userPostDto.getEmail())
                 .build();
@@ -30,8 +30,8 @@ public class UserMapper {
     }
 
     public static User mapUserPatchDtoToUser(UserPatchDto userPatchDto) {
-        return User.builder().
-                id(userPatchDto.getId())
+        return User.builder()
+                .id(userPatchDto.getId())
                 .name(userPatchDto.getName())
                 .email(userPatchDto.getEmail())
                 .build();
