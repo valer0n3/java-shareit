@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.dto.UserPostDto;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
@@ -26,28 +27,28 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        return UserMapper.DtoToUser(userService.createUser(UserMapper.toUserDto(user)));
+    public UserPostDto createUser(@Valid @RequestBody UserPostDto userPostDto) {
+        return userService.createUser(userPostDto);
     }
 
     @DeleteMapping("/{id}")
-    public User deleteUser(@PathVariable int id) {
-        return UserMapper.DtoToUser(userService.deleteUser(id));
+    public UserPostDto deleteUser(@PathVariable int id) {
+        return userService.deleteUser(id);
     }
 
     @PatchMapping("/{id}")
-    public UserPostDto updateUser(@Valid @PathVariable int id,
-                                  @RequestBody UserPostDto userPostDto) {
-        return userService.updateUser(userPostDto, id);
+    public UserPatchDto updateUser(@Valid @PathVariable int id,
+                                   @RequestBody UserPatchDto userPatchDto) {
+        return userService.updateUser(userPatchDto, id);
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserPostDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable int id) {
-        return UserMapper.DtoToUser(userService.getUserById(id));
+    public UserPostDto getUserById(@PathVariable int id) {
+        return userService.getUserById(id);
     }
 }

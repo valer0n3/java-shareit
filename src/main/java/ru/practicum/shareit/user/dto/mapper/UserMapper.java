@@ -4,7 +4,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserPostDto;
 
 public class UserMapper {
-    public static UserPostDto toUserDto(User user) {
+    public static UserPostDto mapUserToUserPostDTO(User user) {
         return UserPostDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -12,7 +12,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static User DtoToUser(UserPostDto userPostDto) {
+    public static User mapUserPostDtoToUser(UserPostDto userPostDto) {
         return User.builder().
                 id(userPostDto.getId())
                 .name(userPostDto.getName())
