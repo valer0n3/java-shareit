@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.storage;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class UserStorageInMemoryImpl implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        return userHashMap.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(userHashMap.values());
     }
 
     @Override

@@ -3,9 +3,11 @@ package ru.practicum.shareit.item.storage;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class ItemStorageInMemoryImpl implements ItemStrorage {
@@ -32,7 +34,7 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
         if (item.getAvailable() != null) {
             itemHashMap.get(itemId).setAvailable(item.getAvailable());
         }
-        return null;
+        return itemHashMap.get(itemId);
     }
 
     @Override
@@ -42,7 +44,10 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
 
     @Override
     public List<Item> getAllItemsForOwner(int userID) {
-        return null;
+        itemHashMap.values().stream()
+                .filter((item) -> item.getOwner() == userID)
+                .collect(Collectors.toList());
+        return new ArrayList<>(itemHashMap.values());
     }
 
     @Override
@@ -61,5 +66,10 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
     @Override
     public boolean checkItemOwner(int userId, int itemID) {
         return itemHashMap.get(itemID).getOwner() == userId;
+    }
+
+    @Override
+    public boolean checkIfItemIdExists(int itemID) {
+        return itemHashMap.containsKey(itemID);
     }
 }

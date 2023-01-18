@@ -34,6 +34,7 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public ItemDto getItemById(int itemId) {
+        checkIfItemIdExists(itemId);
         return ItemMapper.mapItemToItemDto(itemStorage.getItemById(itemId));
     }
 
@@ -58,6 +59,12 @@ public class ItemServiceImplementation implements ItemService {
     private void checkItemOwner(int userId, int itemId) {
         if (!itemStorage.checkItemOwner(userId, itemId)) {
             throw new ObjectNotFoundException("Item does not belong to User and can not be updated!");
+        }
+    }
+
+    private void checkIfItemIdExists(int itemId) {
+        if (!itemStorage.checkIfItemIdExists(itemId)) {
+            throw new ObjectNotFoundException(String.format("Item with ID %i was not found", itemId));
         }
     }
 }

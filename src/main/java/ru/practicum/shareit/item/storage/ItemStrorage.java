@@ -18,4 +18,6 @@ public interface ItemStrorage {
     boolean checkIfIdAlreadyExists(int id);
 
     boolean checkItemOwner(int userId, int itemID);
+
+    boolean checkIfItemIdExists(int itemID);
 }

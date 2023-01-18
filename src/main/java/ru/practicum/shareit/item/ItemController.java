@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class ItemController {
     private final ItemService itemservice;
 
     @PostMapping
-    public ItemDto addNewItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int userID) {
+    public ItemDto addNewItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int userID) {
         return null;
     }
 
