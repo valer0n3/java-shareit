@@ -13,7 +13,7 @@ public class ItemPatchDto {
     private int id;
     private String name;
     private String description;
-    private boolean available;
+    private Boolean available;
     private int owner;
     private ItemRequest request;
 }

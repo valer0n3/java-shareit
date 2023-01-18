@@ -14,11 +14,24 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
 
     @Override
     public Item addNewItem(Item item, int userId) {
-        return null;
+        int itemID = idGenerator();
+        item.setOwner(userId);
+        item.setId(itemID);
+        itemHashMap.put(itemID, item);
+        return itemHashMap.get(itemID);
     }
 
     @Override
     public Item updateItem(Item item, int userId, int itemId) {
+        if (!item.getName().isBlank()) {
+            itemHashMap.get(itemId).setName(item.getName());
+        }
+        if (!item.getDescription().isBlank()) {
+            itemHashMap.get(itemId).setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            itemHashMap.get(itemId).setAvailable(item.getAvailable());
+        }
         return null;
     }
 
@@ -43,5 +56,10 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
 
     public boolean checkIfIdAlreadyExists(int id) {
         return itemHashMap.containsKey(id);
+    }
+
+    @Override
+    public boolean checkItemOwner(int userId, int itemID) {
+        return itemHashMap.get(itemID).getOwner() == userId;
     }
 }

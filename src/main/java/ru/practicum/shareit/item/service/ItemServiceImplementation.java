@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.IncorrectInputException;
+import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -19,6 +20,7 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
+        checkIfIdExists(userId);
         Item item = ItemMapper.mapItemDtoToItem(itemDto);
         return ItemMapper.mapItemToItemDto(itemStorage.addNewItem(item, userId));
     }
@@ -26,6 +28,7 @@ public class ItemServiceImplementation implements ItemService {
     @Override
     public ItemPatchDto updateItem(ItemPatchDto itemPatchDto, int userId, int itemId) {
         Item item = ItemMapper.mapItemPatchDtoToItem(itemPatchDto);
+        checkItemOwner(userId, itemId);
         return ItemMapper.mapItemToItemPatchDto(itemStorage.updateItem(item, userId, itemId));
     }
 
@@ -46,9 +49,15 @@ public class ItemServiceImplementation implements ItemService {
                 .map((ItemMapper::mapItemToItemDto)).collect(Collectors.toList());
     }
 
-    public void checkIfIdExists(int id) {
+    private void checkIfIdExists(int id) {
         if (!itemStorage.checkIfIdAlreadyExists(id)) {
             throw new IncorrectInputException(String.format("Id %i is not existed", id));
+        }
+    }
+
+    private void checkItemOwner(int userId, int itemId) {
+        if (!itemStorage.checkItemOwner(userId, itemId)) {
+            throw new ObjectNotFoundException("Item does not belong to User and can not be updated!");
         }
     }
 }

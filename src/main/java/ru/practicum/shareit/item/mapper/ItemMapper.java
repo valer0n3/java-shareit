@@ -11,7 +11,7 @@ public class ItemMapper {
         return ItemDto.builder()
                 .name(item.getName())
                 .description(item.getDescription())
-                .available(item.isAvailable())
+                .available(item.getAvailable())
                 .request(item.getRequest()).build();
     }
 
@@ -19,7 +19,7 @@ public class ItemMapper {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
-                .available(itemDto.isAvailable())
+                .available(itemDto.getAvailable())
                 .request(itemDto.getRequest()).build();
     }
 
@@ -27,7 +27,7 @@ public class ItemMapper {
         return ItemPatchDto.builder()
                 .name(item.getName())
                 .description(item.getDescription())
-                .available(item.isAvailable())
+                .available(item.getAvailable())
                 .request(item.getRequest()).build();
     }
 
@@ -35,7 +35,7 @@ public class ItemMapper {
         return Item.builder()
                 .name(itemPatchDto.getName())
                 .description(itemPatchDto.getDescription())
-                .available(itemPatchDto.isAvailable())
+                .available(itemPatchDto.getAvailable())
                 .request(itemPatchDto.getRequest()).build();
     }
 }

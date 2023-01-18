@@ -2,8 +2,6 @@ package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UserPostDto;
-import ru.practicum.shareit.user.dto.mapper.UserMapper;
 
 import java.util.HashMap;
 import java.util.List;
