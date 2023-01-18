@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserStorage {
-    UserPostDto createUser(UserPostDto userPostDto);
+    User createUser(User user);
 
-    Optional<UserPostDto> deleteUser(int id);
+    Optional<User> deleteUser(int id);
 
-    UserPostDto updateUser(UserPostDto userPostDto, int id);
+    User updateUser(User user, int id);
 
     List<User> getAllUsers();
 
-    Optional<UserPostDto> getUserById(int id);
+    Optional<User> getUserById(int id);
 
     boolean checkIfEmailAlreadyExists(String mail);
 

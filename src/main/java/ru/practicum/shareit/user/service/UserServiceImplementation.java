@@ -5,10 +5,13 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.dto.UserPostDto;
+import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -18,32 +21,35 @@ public class UserServiceImplementation implements UserService {
     @Override
     public UserPostDto createUser(UserPostDto userPostDto) {
         checkIfEmailExists(userPostDto.getEmail());
-        return userStorage.createUser(userPostDto);
+        User user = UserMapper.mapUserPostDtoToUser(userPostDto);
+        return UserMapper.mapUserToUserPostDTO(userStorage.createUser(user));
     }
 
     @Override
     public UserPostDto deleteUser(int id) {
-        return userStorage.deleteUser(id)
-                .orElseThrow(() -> new IncorrectInputException(String.format("Id %i is not existed", id)));
+        return UserMapper.mapUserToUserPostDTO(userStorage.deleteUser(id)
+                .orElseThrow(() -> new IncorrectInputException(String.format("Id %i is not existed", id))));
     }
 
     @Override
-    public UserPostDto updateUser(UserPostDto userPostDto, int id) {
+    public UserPatchDto updateUser(UserPatchDto userPatchDto, int id) {
         checkIfIdExists(id);
-        checkIfEmailExists(userPostDto.getEmail());
-        return userStorage.updateUser(userPostDto, id);
+        checkIfEmailExists(userPatchDto.getEmail());
+        User user = UserMapper.mapUserPatchDtoToUser(userPatchDto);
+        return UserMapper.mapUserToUserPatchDTO(userStorage.updateUser(user, id));
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userStorage.getAllUsers();
+    public List<UserPostDto> getAllUsers() {
+        return userStorage.getAllUsers().stream()
+                .map(UserMapper::mapUserToUserPostDTO).collect(Collectors.toList());
     }
 
     @Override
     public UserPostDto getUserById(int id) {
         checkIfIdExists(id);
-        return userStorage.getUserById(id)
-                .orElseThrow(() -> new IncorrectInputException(String.format("Id %i is not existed", id)));
+        return UserMapper.mapUserToUserPostDTO(userStorage.getUserById(id)
+                .orElseThrow(() -> new IncorrectInputException(String.format("Id %i is not existed", id))));
     }
 
     public void checkIfIdExists(int id) {

@@ -13,28 +13,28 @@ import java.util.stream.Collectors;
 
 @Repository
 public class UserStorageInMemoryImpl implements UserStorage {
-    private Map<Integer, UserPostDto> userHashMap = new HashMap<>();
+    private Map<Integer, User> userHashMap = new HashMap<>();
     private static int id;
 
     @Override
-    public UserPostDto createUser(UserPostDto userPostDto) {
-        userPostDto.setId(idGenerator());
-        userHashMap.put(userPostDto.getId(), userPostDto);
-        return userPostDto;
+    public User createUser(User user) {
+        user.setId(idGenerator());
+        userHashMap.put(user.getId(), user);
+        return user;
     }
 
     @Override
-    public Optional<UserPostDto> deleteUser(int id) {
+    public Optional<User> deleteUser(int id) {
         return Optional.ofNullable(userHashMap.remove(id));
     }
 
     @Override
-    public UserPostDto updateUser(UserPostDto userPostDto, int id) {
-        if (userPostDto.getName() != null) {
-            userHashMap.get(id).setName(userPostDto.getName());
+    public User updateUser(User user, int id) {
+        if (user.getName() != null) {
+            userHashMap.get(id).setName(user.getName());
         }
-        if (userPostDto.getEmail() != null) {
-            userHashMap.get(id).setEmail(userPostDto.getEmail());
+        if (user.getEmail() != null) {
+            userHashMap.get(id).setEmail(user.getEmail());
         }
         System.out.println(userHashMap.get(id));
         return userHashMap.get(id);
@@ -42,18 +42,18 @@ public class UserStorageInMemoryImpl implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        return userHashMap.values().stream().map((user) -> UserMapper.DtoToUser(user)).collect(Collectors.toList());
+        return userHashMap.values().stream().collect(Collectors.toList());
     }
 
     @Override
-    public Optional<UserPostDto> getUserById(int id) {
+    public Optional<User> getUserById(int id) {
         return Optional.ofNullable(userHashMap.get(id));
     }
 
     @Override
     public boolean checkIfEmailAlreadyExists(String mail) {
-        for (UserPostDto userPostDto : userHashMap.values()) {
-            if (userPostDto.getEmail().equalsIgnoreCase(mail)) {
+        for (User user : userHashMap.values()) {
+            if (user.getEmail().equalsIgnoreCase(mail)) {
                 return true;
             }
         }
