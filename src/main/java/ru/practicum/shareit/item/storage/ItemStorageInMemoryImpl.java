@@ -1,16 +1,19 @@
 package ru.practicum.shareit.item.storage;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.storage.UserStorageInMemoryImpl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class ItemStorageInMemoryImpl implements ItemStrorage {
+    private final UserStorageInMemoryImpl userStorageInMemory;
     private Map<Integer, Item> itemHashMap = new HashMap<>();
     private static int id;
 
@@ -25,10 +28,10 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
 
     @Override
     public Item updateItem(Item item, int userId, int itemId) {
-        if (!item.getName().isBlank()) {
+        if (item.getName() != null && !item.getName().isBlank()) {
             itemHashMap.get(itemId).setName(item.getName());
         }
-        if (!item.getDescription().isBlank()) {
+        if (item.getDescription() != null && !item.getDescription().isBlank()) {
             itemHashMap.get(itemId).setDescription(item.getDescription());
         }
         if (item.getAvailable() != null) {
@@ -44,23 +47,26 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
 
     @Override
     public List<Item> getAllItemsForOwner(int userID) {
-        itemHashMap.values().stream()
+        return itemHashMap.values().stream()
                 .filter((item) -> item.getOwner() == userID)
                 .collect(Collectors.toList());
-        return new ArrayList<>(itemHashMap.values());
     }
 
     @Override
     public List<Item> searchItem(String text) {
-        return null;
+        return itemHashMap.values().stream()
+                .filter(Item::getAvailable)
+                .filter((item) -> item.getName().equalsIgnoreCase(text.trim()) ||
+                        item.getDescription().equalsIgnoreCase(text.trim()))
+                .collect(Collectors.toList());
     }
 
     private int idGenerator() {
         return ++id;
     }
 
-    public boolean checkIfIdAlreadyExists(int id) {
-        return itemHashMap.containsKey(id);
+    public boolean checkIfUserIdAlreadyExists(int id) {
+        return userStorageInMemory.getUserHashMap().containsKey(id);
     }
 
     @Override

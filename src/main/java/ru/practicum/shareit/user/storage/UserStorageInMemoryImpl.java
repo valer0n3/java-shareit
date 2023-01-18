@@ -15,6 +15,10 @@ public class UserStorageInMemoryImpl implements UserStorage {
     private Map<Integer, User> userHashMap = new HashMap<>();
     private static int id;
 
+    public Map<Integer, User> getUserHashMap() {
+        return userHashMap;
+    }
+
     @Override
     public User createUser(User user) {
         user.setId(idGenerator());

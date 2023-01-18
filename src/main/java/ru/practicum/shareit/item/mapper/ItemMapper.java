@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 public class ItemMapper {
     public static ItemDto mapItemToItemDto(Item item) {
         return ItemDto.builder()
+                .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
@@ -25,6 +26,7 @@ public class ItemMapper {
 
     public static ItemPatchDto mapItemToItemPatchDto(Item item) {
         return ItemPatchDto.builder()
+                .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())

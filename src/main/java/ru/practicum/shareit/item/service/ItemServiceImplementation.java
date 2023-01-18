@@ -20,7 +20,7 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
-        checkIfIdExists(userId);
+        checkIfUserIdExists(userId);
         Item item = ItemMapper.mapItemDtoToItem(itemDto);
         return ItemMapper.mapItemToItemDto(itemStorage.addNewItem(item, userId));
     }
@@ -46,13 +46,16 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public List<ItemDto> searchItem(String text) {
+        if (text.isBlank()) {
+            throw new IncorrectInputException("Incorrect data input for search!");
+        }
         return itemStorage.searchItem(text).stream()
                 .map((ItemMapper::mapItemToItemDto)).collect(Collectors.toList());
     }
 
-    private void checkIfIdExists(int id) {
-        if (!itemStorage.checkIfIdAlreadyExists(id)) {
-            throw new IncorrectInputException(String.format("Id %i is not existed", id));
+    private void checkIfUserIdExists(int id) {
+        if (!itemStorage.checkIfUserIdAlreadyExists(id)) {
+            throw new ObjectNotFoundException(String.format("User with id: %d is not existed", id));
         }
     }
 
@@ -64,7 +67,7 @@ public class ItemServiceImplementation implements ItemService {
 
     private void checkIfItemIdExists(int itemId) {
         if (!itemStorage.checkIfItemIdExists(itemId)) {
-            throw new ObjectNotFoundException(String.format("Item with ID %i was not found", itemId));
+            throw new ObjectNotFoundException(String.format("Item with ID %d was not found", itemId));
         }
     }
 }

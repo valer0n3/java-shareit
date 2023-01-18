@@ -28,28 +28,29 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addNewItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int userID) {
-        return null;
+        System.out.println("******** " + userID);
+        return itemservice.addNewItem(itemDto, userID);
     }
 
     @PatchMapping("/{itemId}")
     public ItemPatchDto updateItem(@RequestBody ItemPatchDto itemPatchDto,
                                    @RequestHeader("X-Sharer-User-Id") int userId,
                                    @PathVariable int itemId) {
-        return null;
+        return itemservice.updateItem(itemPatchDto, userId, itemId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable int itemId) {
-        return null;
+        return itemservice.getItemById(itemId);
     }
 
     @GetMapping
     public List<ItemDto> getAllItemsForOwner(@RequestHeader("X-Sharer-User-Id") int userId) {
-        return null;
+        return itemservice.getAllItemsForOwner(userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestParam String text) {
-        return null;
+        return itemservice.searchItem(text);
     }
 }
