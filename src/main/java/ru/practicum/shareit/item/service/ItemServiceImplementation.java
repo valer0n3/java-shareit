@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStrorage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -15,27 +18,31 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
-        return itemStorage.addNewItem(itemDto, userId);
+        Item item = ItemMapper.mapItemDtoToItem(itemDto);
+        return ItemMapper.mapItemToItemDto(itemStorage.addNewItem(item, userId));
     }
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, int userId, int itemId) {
-        return itemStorage.updateItem(itemDto, userId, itemId);
+        Item item = ItemMapper.mapItemDtoToItem(itemDto);
+        return ItemMapper.mapItemToItemDto(itemStorage.updateItem(item, userId, itemId));
     }
 
     @Override
     public ItemDto getItemById(int itemId) {
-        return itemStorage.getItemById(itemId);
+        return ItemMapper.mapItemToItemDto(itemStorage.getItemById(itemId));
     }
 
     @Override
     public List<ItemDto> getAllItemsForOwner(int userId) {
-        return itemStorage.getAllItemsForOwner(userId);
+        return itemStorage.getAllItemsForOwner(userId).stream()
+                .map(ItemMapper::mapItemToItemDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ItemDto> searchItem(String text) {
-        return itemStorage.searchItem(text);
+        return itemStorage.searchItem(text).stream()
+                .map((ItemMapper::mapItemToItemDto)).collect(Collectors.toList());
     }
 
     public void checkIfIdExists(int id) {

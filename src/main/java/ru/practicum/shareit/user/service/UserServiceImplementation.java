@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserPostDto;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
@@ -16,22 +16,22 @@ public class UserServiceImplementation implements UserService {
     private final UserStorage userStorage;
 
     @Override
-    public UserDto createUser(UserDto userDto) {
-        checkIfEmailExists(userDto.getEmail());
-        return userStorage.createUser(userDto);
+    public UserPostDto createUser(UserPostDto userPostDto) {
+        checkIfEmailExists(userPostDto.getEmail());
+        return userStorage.createUser(userPostDto);
     }
 
     @Override
-    public UserDto deleteUser(int id) {
+    public UserPostDto deleteUser(int id) {
         return userStorage.deleteUser(id)
                 .orElseThrow(() -> new IncorrectInputException(String.format("Id %i is not existed", id)));
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto, int id) {
+    public UserPostDto updateUser(UserPostDto userPostDto, int id) {
         checkIfIdExists(id);
-        checkIfEmailExists(userDto.getEmail());
-        return userStorage.updateUser(userDto, id);
+        checkIfEmailExists(userPostDto.getEmail());
+        return userStorage.updateUser(userPostDto, id);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserDto getUserById(int id) {
+    public UserPostDto getUserById(int id) {
         checkIfIdExists(id);
         return userStorage.getUserById(id)
                 .orElseThrow(() -> new IncorrectInputException(String.format("Id %i is not existed", id)));

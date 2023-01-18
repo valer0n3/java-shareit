@@ -1,8 +1,7 @@
 package ru.practicum.shareit.item.storage;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,31 +9,31 @@ import java.util.Map;
 
 @Repository
 public class ItemStorageInMemoryImpl implements ItemStrorage {
-    private Map<Integer, UserDto> itemHashMap = new HashMap<>();
+    private Map<Integer, Item> itemHashMap = new HashMap<>();
     private static int id;
 
     @Override
-    public ItemDto addNewItem(ItemDto itemDto, int userId) {
+    public Item addNewItem(Item item, int userId) {
         return null;
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, int userId, int itemId) {
+    public Item updateItem(Item item, int userId, int itemId) {
         return null;
     }
 
     @Override
-    public ItemDto getItemById(int itemId) {
+    public Item getItemById(int itemId) {
         return null;
     }
 
     @Override
-    public List<ItemDto> getAllItemsForOwner(int userID) {
+    public List<Item> getAllItemsForOwner(int userID) {
         return null;
     }
 
     @Override
-    public List<ItemDto> searchItem(String text) {
+    public List<Item> searchItem(String text) {
         return null;
     }
 

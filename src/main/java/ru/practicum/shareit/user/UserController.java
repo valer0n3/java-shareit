@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserPostDto;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -36,9 +36,9 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@Valid @PathVariable int id,
-                           @RequestBody UserDto userDto) {
-        return userService.updateUser(userDto, id);
+    public UserPostDto updateUser(@Valid @PathVariable int id,
+                                  @RequestBody UserPostDto userPostDto) {
+        return userService.updateUser(userPostDto, id);
     }
 
     @GetMapping

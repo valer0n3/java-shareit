@@ -2,7 +2,7 @@ package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserPostDto;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
 
 import java.util.HashMap;
@@ -13,28 +13,28 @@ import java.util.stream.Collectors;
 
 @Repository
 public class UserStorageInMemoryImpl implements UserStorage {
-    private Map<Integer, UserDto> userHashMap = new HashMap<>();
+    private Map<Integer, UserPostDto> userHashMap = new HashMap<>();
     private static int id;
 
     @Override
-    public UserDto createUser(UserDto userDto) {
-        userDto.setId(idGenerator());
-        userHashMap.put(userDto.getId(), userDto);
-        return userDto;
+    public UserPostDto createUser(UserPostDto userPostDto) {
+        userPostDto.setId(idGenerator());
+        userHashMap.put(userPostDto.getId(), userPostDto);
+        return userPostDto;
     }
 
     @Override
-    public Optional<UserDto> deleteUser(int id) {
+    public Optional<UserPostDto> deleteUser(int id) {
         return Optional.ofNullable(userHashMap.remove(id));
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto, int id) {
-        if (userDto.getName() != null) {
-            userHashMap.get(id).setName(userDto.getName());
+    public UserPostDto updateUser(UserPostDto userPostDto, int id) {
+        if (userPostDto.getName() != null) {
+            userHashMap.get(id).setName(userPostDto.getName());
         }
-        if (userDto.getEmail() != null) {
-            userHashMap.get(id).setEmail(userDto.getEmail());
+        if (userPostDto.getEmail() != null) {
+            userHashMap.get(id).setEmail(userPostDto.getEmail());
         }
         System.out.println(userHashMap.get(id));
         return userHashMap.get(id);
@@ -46,14 +46,14 @@ public class UserStorageInMemoryImpl implements UserStorage {
     }
 
     @Override
-    public Optional<UserDto> getUserById(int id) {
+    public Optional<UserPostDto> getUserById(int id) {
         return Optional.ofNullable(userHashMap.get(id));
     }
 
     @Override
     public boolean checkIfEmailAlreadyExists(String mail) {
-        for (UserDto userDto : userHashMap.values()) {
-            if (userDto.getEmail().equalsIgnoreCase(mail)) {
+        for (UserPostDto userPostDto : userHashMap.values()) {
+            if (userPostDto.getEmail().equalsIgnoreCase(mail)) {
                 return true;
             }
         }
