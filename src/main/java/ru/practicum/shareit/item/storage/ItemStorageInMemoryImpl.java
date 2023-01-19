@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemStorageInMemoryImpl implements ItemStrorage {
     private final UserStorageInMemoryImpl userStorageInMemory;
-    private Map<Integer, Item> itemHashMap = new HashMap<>();
+    private final Map<Integer, Item> itemHashMap = new HashMap<>();
     private static int id;
 
     @Override
