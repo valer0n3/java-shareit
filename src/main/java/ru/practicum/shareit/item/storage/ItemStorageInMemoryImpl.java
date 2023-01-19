@@ -22,7 +22,7 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
     @Override
     public Item addNewItem(Item item, int userId) {
         int itemID = idGenerator();
-        item.setOwner(userId);
+        item.setOwner(userStorageInMemory.getUserById(userId));
         item.setId(itemID);
         itemHashMap.put(itemID, item);
         return itemHashMap.get(itemID);
@@ -51,7 +51,7 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
     @Override
     public List<Item> getAllItemsForOwner(int userID) {
         return itemHashMap.values().stream()
-                .filter((item) -> item.getOwner() == userID)
+                .filter((item) -> item.getOwner().getId() == userID)
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +74,7 @@ public class ItemStorageInMemoryImpl implements ItemStrorage {
 
     @Override
     public boolean checkItemOwner(int userId, int itemID) {
-        return itemHashMap.get(itemID).getOwner() == userId;
+        return itemHashMap.get(itemID).getOwner().getId() == userId;
     }
 
     @Override
