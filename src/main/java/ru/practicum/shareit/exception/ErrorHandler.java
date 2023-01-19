@@ -11,22 +11,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Exception incorrectValue(final IncorrectInputException e) {
-        log.warn("Error 400: " + e.getMessage());
-        return new Exception("IncorrectInputException ", e.getMessage());
+    public Exception incorrectValue(final IncorrectInputException incorrectInputException) {
+        log.warn("Error 400: {}", incorrectInputException.getMessage());
+        return new Exception("IncorrectInputException ", incorrectInputException.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Exception objectNotFound(final ObjectNotFoundException e) {
-        log.warn("Error 404: " + e.getMessage());
-        return new Exception("ObjectNotFoundException ", e.getMessage());
+    public Exception objectNotFound(final ObjectNotFoundException objectNotFoundException) {
+        log.warn("Error 404: {}", objectNotFoundException.getMessage());
+        return new Exception("ObjectNotFoundException ", objectNotFoundException.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Exception duplicatedDataException(final DuplicatedDataException e) {
-        log.warn("Error 409: " + e.getMessage());
-        return new Exception("DuplicatedDataException ", e.getMessage());
+    public Exception duplicatedDataException(final DuplicatedDataException duplicatedDataException) {
+        log.warn("Error 409: {}", duplicatedDataException.getMessage());
+        return new Exception("DuplicatedDataException ", duplicatedDataException.getMessage());
     }
 }
