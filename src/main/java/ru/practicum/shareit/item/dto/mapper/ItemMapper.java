@@ -1,43 +1,18 @@
 package ru.practicum.shareit.item.dto.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.model.Item;
 
-@Component
-public class ItemMapper {
-    public static ItemDto mapItemToItemDto(Item item) {
-        return ItemDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .request(item.getRequest()).build();
-    }
+@Mapper(componentModel = "spring")
+public interface ItemMapper {
+    ItemDto mapItemToItemDto(Item item);
 
-    public static Item mapItemDtoToItem(ItemDto itemDto) {
-        return Item.builder()
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .request(itemDto.getRequest()).build();
-    }
+    Item mapItemDtoToItem(ItemDto itemDto);
 
-    public static ItemPatchDto mapItemToItemPatchDto(Item item) {
-        return ItemPatchDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .request(item.getRequest()).build();
-    }
+    ItemPatchDto mapItemToItemPatchDto(Item item);
 
-    public static Item mapItemPatchDtoToItem(ItemPatchDto itemPatchDto) {
-        return Item.builder()
-                .name(itemPatchDto.getName())
-                .description(itemPatchDto.getDescription())
-                .available(itemPatchDto.getAvailable())
-                .request(itemPatchDto.getRequest()).build();
-    }
+    Item mapItemPatchDtoToItem(ItemPatchDto itemPatchDto);
 }
+

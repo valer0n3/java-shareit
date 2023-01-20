@@ -17,31 +17,32 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemServiceImplementation implements ItemService {
     private final ItemStrorage itemStorage;
+    private final ItemMapper itemMapper;
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
         checkIfUserIdExists(userId);
-        Item item = ItemMapper.mapItemDtoToItem(itemDto);
-        return ItemMapper.mapItemToItemDto(itemStorage.addNewItem(item, userId));
+        Item item = itemMapper.mapItemDtoToItem(itemDto);
+        return itemMapper.mapItemToItemDto(itemStorage.addNewItem(item, userId));
     }
 
     @Override
     public ItemPatchDto updateItem(ItemPatchDto itemPatchDto, int userId, int itemId) {
-        Item item = ItemMapper.mapItemPatchDtoToItem(itemPatchDto);
+        Item item = itemMapper.mapItemPatchDtoToItem(itemPatchDto);
         checkItemOwner(userId, itemId);
-        return ItemMapper.mapItemToItemPatchDto(itemStorage.updateItem(item, userId, itemId));
+        return itemMapper.mapItemToItemPatchDto(itemStorage.updateItem(item, userId, itemId));
     }
 
     @Override
     public ItemDto getItemById(int itemId) {
         checkIfItemIdExists(itemId);
-        return ItemMapper.mapItemToItemDto(itemStorage.getItemById(itemId));
+        return itemMapper.mapItemToItemDto(itemStorage.getItemById(itemId));
     }
 
     @Override
     public List<ItemDto> getAllItemsForOwner(int userId) {
         return itemStorage.getAllItemsForOwner(userId).stream()
-                .map(ItemMapper::mapItemToItemDto).collect(Collectors.toList());
+                .map(itemMapper::mapItemToItemDto).collect(Collectors.toList());
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ItemServiceImplementation implements ItemService {
             return new ArrayList<>();
         }
         return itemStorage.searchItem(text).stream()
-                .map((ItemMapper::mapItemToItemDto)).collect(Collectors.toList());
+                .map((itemMapper::mapItemToItemDto)).collect(Collectors.toList());
     }
 
     private void checkIfUserIdExists(int id) {

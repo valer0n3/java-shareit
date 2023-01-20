@@ -1,39 +1,17 @@
 package ru.practicum.shareit.user.dto.mapper;
 
+import org.mapstruct.Mapper;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.dto.UserPostDto;
 import ru.practicum.shareit.user.model.User;
 
-public class UserMapper {
-    public static UserPostDto mapUserToUserPostDTO(User user) {
-        return UserPostDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    UserPostDto mapUserToUserPostDTO(User user);
 
-    public static User mapUserPostDtoToUser(UserPostDto userPostDto) {
-        return User.builder()
-                .id(userPostDto.getId())
-                .name(userPostDto.getName())
-                .email(userPostDto.getEmail())
-                .build();
-    }
+    User mapUserPostDtoToUser(UserPostDto userPostDto);
 
-    public static UserPatchDto mapUserToUserPatchDTO(User user) {
-        return UserPatchDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
-    }
+    UserPatchDto mapUserToUserPatchDTO(User user);
 
-    public static User mapUserPatchDtoToUser(UserPatchDto userPatchDto) {
-        return User.builder()
-                .id(userPatchDto.getId())
-                .name(userPatchDto.getName())
-                .email(userPatchDto.getEmail())
-                .build();
-    }
+    User mapUserPatchDtoToUser(UserPatchDto userPatchDto);
 }

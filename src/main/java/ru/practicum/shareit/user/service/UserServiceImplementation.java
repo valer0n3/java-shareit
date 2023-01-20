@@ -17,37 +17,38 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImplementation implements UserService {
     private final UserStorage userStorage;
+    private final UserMapper userMapper;
 
     @Override
     public UserPostDto createUser(UserPostDto userPostDto) {
         checkIfEmailExists(userPostDto.getEmail());
-        User user = UserMapper.mapUserPostDtoToUser(userPostDto);
-        return UserMapper.mapUserToUserPostDTO(userStorage.createUser(user));
+        User user = userMapper.mapUserPostDtoToUser(userPostDto);
+        return userMapper.mapUserToUserPostDTO(userStorage.createUser(user));
     }
 
     @Override
     public UserPostDto deleteUser(int id) {
-        return UserMapper.mapUserToUserPostDTO(userStorage.deleteUser(id));
+        return userMapper.mapUserToUserPostDTO(userStorage.deleteUser(id));
     }
 
     @Override
     public UserPatchDto updateUser(UserPatchDto userPatchDto, int id) {
         checkIfIdExists(id);
         checkIfEmailExists(userPatchDto.getEmail());
-        User user = UserMapper.mapUserPatchDtoToUser(userPatchDto);
-        return UserMapper.mapUserToUserPatchDTO(userStorage.updateUser(user, id));
+        User user = userMapper.mapUserPatchDtoToUser(userPatchDto);
+        return userMapper.mapUserToUserPatchDTO(userStorage.updateUser(user, id));
     }
 
     @Override
     public List<UserPostDto> getAllUsers() {
         return userStorage.getAllUsers().stream()
-                .map(UserMapper::mapUserToUserPostDTO).collect(Collectors.toList());
+                .map(userMapper::mapUserToUserPostDTO).collect(Collectors.toList());
     }
 
     @Override
     public UserPostDto getUserById(int id) {
         checkIfIdExists(id);
-        return UserMapper.mapUserToUserPostDTO(userStorage.getUserById(id));
+        return userMapper.mapUserToUserPostDTO(userStorage.getUserById(id));
     }
 
     public void checkIfIdExists(int id) {
