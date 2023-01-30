@@ -1,4 +1,4 @@
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     users_id BIGSERIAL
         CONSTRAINT users_pk
@@ -11,7 +11,7 @@ CREATE TABLE users
 ALTER TABLE users
     OWNER TO postgres;
 
-CREATE TABLE requests
+CREATE TABLE IF NOT EXISTS requests
 (
     requests_id  BIGSERIAL
         CONSTRAINT requests_pk
@@ -25,7 +25,7 @@ CREATE TABLE requests
 ALTER TABLE requests
     OWNER TO postgres;
 
-CREATE TABLE items
+CREATE TABLE IF NOT EXISTS items
 (
     items_id     BIGSERIAL
         CONSTRAINT items_pk
@@ -44,7 +44,7 @@ CREATE TABLE items
 ALTER TABLE items
     OWNER TO postgres;
 
-CREATE TABLE bookings
+CREATE TABLE IF NOT EXISTS bookings
 (
     bookings_id BIGINT NOT NULL
         PRIMARY KEY,
@@ -62,7 +62,7 @@ CREATE TABLE bookings
 ALTER TABLE bookings
     OWNER TO postgres;
 
-CREATE TABLE comments
+CREATE TABLE IF NOT EXISTS comments
 (
     comments_id BIGSERIAL
         CONSTRAINT comments_pk
