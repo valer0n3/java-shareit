@@ -1,80 +1,81 @@
-create table if not exists users
+CREATE TABLE users
 (
-    users_id bigserial
-        constraint users_pk
-            primary key,
-    name     varchar,
-    email    varchar not null UNIQUE
+    users_id BIGSERIAL
+        CONSTRAINT users_pk
+            PRIMARY KEY,
+    name     VARCHAR,
+    email    VARCHAR NOT NULL
+        UNIQUE
 );
 
-alter table users
-    owner to postgres;
+ALTER TABLE users
+    OWNER TO postgres;
 
-create table if not exists requests
+CREATE TABLE requests
 (
-    requests_id  bigserial
-        constraint requests_pk
-            primary key,
-    description   varchar,
-    requestor_id bigint
-        constraint requests_users_fk
-            references users
+    requests_id  BIGSERIAL
+        CONSTRAINT requests_pk
+            PRIMARY KEY,
+    description  VARCHAR,
+    requestor_id BIGINT
+        CONSTRAINT requests_users_fk
+            REFERENCES users
 );
 
-alter table requests
-    owner to postgres;
+ALTER TABLE requests
+    OWNER TO postgres;
 
-create table if not exists items
+CREATE TABLE items
 (
-    items_id     bigserial
-        constraint items_pk
-            primary key,
-    name         varchar,
-    description  varchar,
-    is_available boolean,
-    owner_id     bigint
-        constraint items_users_fk
-            references users,
-    request_id   bigint
-        constraint items_requests_fk
-            references requests
+    items_id     BIGSERIAL
+        CONSTRAINT items_pk
+            PRIMARY KEY,
+    name         VARCHAR,
+    description  VARCHAR,
+    is_available BOOLEAN,
+    owner_id     BIGINT
+        CONSTRAINT items_users_fk
+            REFERENCES users,
+    request_id   BIGINT
+        CONSTRAINT items_requests_fk
+            REFERENCES requests
 );
 
-alter table items
-    owner to postgres;
+ALTER TABLE items
+    OWNER TO postgres;
 
-create table if not exists bookings
+CREATE TABLE bookings
 (
-    bookings_id bigint not null
-        primary key,
-    start_date  timestamp,
-    end_date    timestamp,
-    booker_id   bigint not null
-        constraint bookings_users_fk
-            references users,
-    item_id     bigint not null
-        constraint bookings_items_fk
-            references items,
-    status      varchar
+    bookings_id BIGINT NOT NULL
+        PRIMARY KEY,
+    start_date  TIMESTAMP,
+    end_date    TIMESTAMP,
+    booker_id   BIGINT NOT NULL
+        CONSTRAINT bookings_users_fk
+            REFERENCES users,
+    item_id     BIGINT NOT NULL
+        CONSTRAINT bookings_items_fk
+            REFERENCES items,
+    status      VARCHAR
 );
 
-alter table bookings
-    owner to postgres;
+ALTER TABLE bookings
+    OWNER TO postgres;
 
-create table if not exists comments
+CREATE TABLE comments
 (
-    comments_id bigserial
-        constraint comments_pk
-            primary key,
-    text        varchar,
-    item_id     bigint
-        constraint comments_items_fk
-            references items,
-    author_id   bigint
-        constraint comments_users_fk
-            references users
+    comments_id BIGSERIAL
+        CONSTRAINT comments_pk
+            PRIMARY KEY,
+    text        VARCHAR,
+    item_id     BIGINT
+        CONSTRAINT comments_items_fk
+            REFERENCES items,
+    author_id   BIGINT
+        CONSTRAINT comments_users_fk
+            REFERENCES users
 );
 
-alter table comments
-    owner to postgres;
+ALTER TABLE comments
+    OWNER TO postgres;
 
