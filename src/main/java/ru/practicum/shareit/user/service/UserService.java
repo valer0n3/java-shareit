@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     UserPostDto createUser(UserPostDto userPostDto);
 
-    UserPostDto deleteUser(int id);
+    void deleteUser(int id);
 
     UserPatchDto updateUser(UserPatchDto userPatchDto, int id);
 
