@@ -7,7 +7,10 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.item.storage.ItemStrorage;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,31 +21,49 @@ import java.util.stream.Collectors;
 public class ItemServiceImplementation implements ItemService {
     private final ItemStrorage itemStorage;
     private final ItemMapper itemMapper;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
-        checkIfUserIdExists(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
         Item item = itemMapper.mapItemDtoToItem(itemDto);
-        return itemMapper.mapItemToItemDto(itemStorage.addNewItem(item, userId));
+        item.setOwner(user);
+        return itemMapper.mapItemToItemDto(itemRepository.save(item));
     }
 
     @Override
     public ItemPatchDto updateItem(ItemPatchDto itemPatchDto, int userId, int itemId) {
-        Item item = itemMapper.mapItemPatchDtoToItem(itemPatchDto);
-        checkItemOwner(userId, itemId);
-        return itemMapper.mapItemToItemPatchDto(itemStorage.updateItem(item, userId, itemId));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Item Id %d is not existed", itemId)));
+        if (item.getOwner().getId() != userId) {
+            throw new ObjectNotFoundException("Item does not belong to User and can not be updated!");
+        }
+        if (itemPatchDto.getName() != null && !itemPatchDto.getName().isBlank()) {
+            item.setName(itemPatchDto.getName());
+        }
+        if (itemPatchDto.getDescription() != null && !itemPatchDto.getDescription().isBlank()) {
+            item.setDescription(itemPatchDto.getDescription());
+        }
+        if (itemPatchDto.getAvailable() != null) {
+            item.setAvailable(itemPatchDto.getAvailable());
+        }
+        return itemMapper.mapItemToItemPatchDto(itemRepository.save(item));
     }
 
     @Override
     public ItemDto getItemById(int itemId) {
-        checkIfItemIdExists(itemId);
-        return itemMapper.mapItemToItemDto(itemStorage.getItemById(itemId));
+        return itemMapper.mapItemToItemDto(itemRepository.findById(itemId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId))));
     }
 
     @Override
     public List<ItemDto> getAllItemsForOwner(int userId) {
-        return itemStorage.getAllItemsForOwner(userId).stream()
-                .map(itemMapper::mapItemToItemDto).collect(Collectors.toList());
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
+        return itemRepository.getAllItemsForOwner(userId).stream()
+                .map((itemMapper::mapItemToItemDto)).collect(Collectors.toList());
     }
 
     @Override
@@ -50,25 +71,7 @@ public class ItemServiceImplementation implements ItemService {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemStorage.searchItem(text).stream()
+        return itemRepository.searchItem(text).stream()
                 .map((itemMapper::mapItemToItemDto)).collect(Collectors.toList());
-    }
-
-    private void checkIfUserIdExists(int id) {
-        if (!itemStorage.checkIfUserIdAlreadyExists(id)) {
-            throw new ObjectNotFoundException(String.format("User with id: %d is not existed", id));
-        }
-    }
-
-    private void checkItemOwner(int userId, int itemId) {
-        if (!itemStorage.checkItemOwner(userId, itemId)) {
-            throw new ObjectNotFoundException("Item does not belong to User and can not be updated!");
-        }
-    }
-
-    private void checkIfItemIdExists(int itemId) {
-        if (!itemStorage.checkIfItemIdExists(itemId)) {
-            throw new ObjectNotFoundException(String.format("Item with ID %d was not found", itemId));
-        }
     }
 }
