@@ -15,5 +15,5 @@ public interface BookingService {
 
     List<BookingDto> getAllBookingsOfCurrentUser(int userId, BookingStatusEnum state);
 
-    BookingDto getAllBookingsOfAllUserItems(int userId, String state);
+    List<BookingDto> getAllBookingsOfAllUserItems(int userId, BookingStatusEnum state);
 }

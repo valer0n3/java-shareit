@@ -10,12 +10,15 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
+import ru.practicum.shareit.exception.UnsupportedStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
@@ -34,10 +37,15 @@ public class BookingServiceImplementation implements BookingService {
                         .format("Item with ID: %d is not existed", newBookingDto.getItemId())));
         System.out.println("********---------------" + item.getOwner().getId() + " and " + userId);
         if (item.getOwner().getId() == userId) {
-            throw new IncorrectInputException(String.format("User can't book hiw own item"));
+            throw new IncorrectInputException("User can't book hiw own item");
         }
-        if (item.getAvailable() == false) {
-            throw new ObjectNotFoundException("Item is unavailable");
+        if (!item.getAvailable()) {
+            throw new IncorrectInputException("Item is unavailable");
+        }
+        if (newBookingDto.getEnd().isBefore(LocalDateTime.now()) ||
+        newBookingDto.getEnd().isBefore(newBookingDto.getStart()) ||
+        newBookingDto.getStart().isBefore(LocalDateTime.now())) {
+            throw new IncorrectInputException("Booking dates are incorrect");
         }
         Booking booking = bookingMapper.mapNewBookingDtoToBooking(newBookingDto);
         booking.setBooker(booker);
@@ -75,15 +83,43 @@ public class BookingServiceImplementation implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("Booking with ID: %d is not existed", bookingId)));
-        if (booking.getBooker().getId() != userId || booking.getItem().getOwner().getId() != userId) {
+        if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId) {
+            return bookingMapper.mapBookingToBookingDTO(booking);
+        } else {
             throw new IncorrectInputException(String
                     .format("User ID: %d can't access booking with ID: %d", userId, bookingId));
         }
-        return bookingMapper.mapBookingToBookingDTO(booking);
     }
 
     @Override
     public List<BookingDto> getAllBookingsOfCurrentUser(int userId, BookingStatusEnum state) {
+        User booker = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String
+                        .format("User with ID: %d is not existed", userId)));
+        if (state.equals(BookingStatusEnum.ALL)) {
+            return bookingRepository.getAllBookingsOfCurrentUser(userId).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
+        } else if (state.equals(BookingStatusEnum.CURRENT)) {
+            return bookingRepository.getCurrentBookingsOfCurrentUser(userId).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
+        } else if (state.equals(BookingStatusEnum.PAST)) {
+            return bookingRepository.getPastBookingsOfCurrentUser(userId).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
+        } else if (state.equals(BookingStatusEnum.FUTURE)) {
+            return bookingRepository.getFutureBookingsOfCurrentUser(userId).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
+        } else if (state.equals(BookingStatusEnum.WAITING)) {
+            return bookingRepository.getBookingsOfCurrentUser(userId, BookingStatusEnum.WAITING.name()).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
+        } else if (state.equals(BookingStatusEnum.REJECTED)) {
+            return bookingRepository.getBookingsOfCurrentUser(userId, BookingStatusEnum.REJECTED.name()).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
+        } else
+            throw new UnsupportedStatus(String.format("Unknown state: %s", state));
+    }
+
+    @Override
+    public List<BookingDto> getAllBookingsOfAllUserItems(int userId, BookingStatusEnum state) {
         User booker = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("User with ID: %d is not existed", userId)));
@@ -106,11 +142,6 @@ public class BookingServiceImplementation implements BookingService {
             //todo + sort
             return null;
         } else
-            throw new IncorrectInputException(String.format("Booking State: %s is incorrect", state));
-    }
-
-    @Override
-    public BookingDto getAllBookingsOfAllUserItems(int userId, String state) {
-        return null;
+            throw new UnsupportedStatus(String.format("Booking State: %s", state));
     }
 }

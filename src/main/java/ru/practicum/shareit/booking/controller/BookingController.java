@@ -15,6 +15,7 @@ import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.IncorrectInputException;
+import ru.practicum.shareit.exception.UnsupportedStatus;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -50,15 +51,15 @@ public class BookingController {
     public List<BookingDto> getAllBookingsOfCurrentUser(@RequestHeader(X_SHARER_USER_ID) int userId,
                                                         @RequestParam(defaultValue = "all") String state) {
         BookingStatusEnum bookingStatus = Optional.ofNullable(BookingStatusEnum.transferStateToEnum(state))
-                .orElseThrow(() -> new IncorrectInputException(String.format("State input: %s is incorrect", state)));
+                .orElseThrow(() -> new UnsupportedStatus(String.format("Unknown state: %s", state)));
         return bookingService.getAllBookingsOfCurrentUser(userId, bookingStatus);
     }
 
     @GetMapping("/owner")
-    public BookingDto getAllBookingsOfAllUserItems(@RequestHeader(X_SHARER_USER_ID) int userId,
+    public List<BookingDto> getAllBookingsOfAllUserItems(@RequestHeader(X_SHARER_USER_ID) int userId,
                                                    @RequestParam(defaultValue = "all") String state) {
         BookingStatusEnum bookingStatus = Optional.ofNullable(BookingStatusEnum.transferStateToEnum(state))
-                .orElseThrow(() -> new IncorrectInputException(String.format("State input: %s is incorrect", state)));
-        return null;
+                .orElseThrow(() -> new UnsupportedStatus(String.format("Unknown state: %s", state)));
+        return bookingService.getAllBookingsOfAllUserItems(userId, bookingStatus);
     }
 }
