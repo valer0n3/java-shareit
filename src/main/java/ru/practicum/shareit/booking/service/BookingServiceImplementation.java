@@ -15,6 +15,8 @@ import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.util.List;
+
 @Controller
 @AllArgsConstructor
 public class BookingServiceImplementation implements BookingService {
@@ -81,8 +83,30 @@ public class BookingServiceImplementation implements BookingService {
     }
 
     @Override
-    public BookingDto getAllBookingsOfCurrentUser(int userId, String state) {
-        return null;
+    public List<BookingDto> getAllBookingsOfCurrentUser(int userId, BookingStatusEnum state) {
+        User booker = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String
+                        .format("User with ID: %d is not existed", userId)));
+        if (state.equals(BookingStatusEnum.ALL)) {
+            //todo
+            return null;
+        } else if (state.equals(BookingStatusEnum.CURRENT)) {
+            //todo
+            return null;
+        } else if (state.equals(BookingStatusEnum.PAST)) {
+            //todo
+            return null;
+        } else if (state.equals(BookingStatusEnum.FUTURE)) {
+            //todo
+            return null;
+        } else if (state.equals(BookingStatusEnum.WAITING)) {
+            //todo
+            return null;
+        } else if (state.equals(BookingStatusEnum.REJECTED)) {
+            //todo
+            return null;
+        } else
+            throw new IncorrectInputException(String.format("Booking State: %s is incorrect", state));
     }
 
     @Override

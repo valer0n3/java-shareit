@@ -17,6 +17,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.IncorrectInputException;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -46,11 +47,11 @@ public class BookingController {
     }
 
     @GetMapping
-    public BookingDto getAllBookingsOfCurrentUser(@RequestHeader(X_SHARER_USER_ID) int userId,
-                                                  @RequestParam(defaultValue = "all") String state) {
+    public List<BookingDto> getAllBookingsOfCurrentUser(@RequestHeader(X_SHARER_USER_ID) int userId,
+                                                        @RequestParam(defaultValue = "all") String state) {
         BookingStatusEnum bookingStatus = Optional.ofNullable(BookingStatusEnum.transferStateToEnum(state))
                 .orElseThrow(() -> new IncorrectInputException(String.format("State input: %s is incorrect", state)));
-        return null;
+        return bookingService.getAllBookingsOfCurrentUser(userId, bookingStatus);
     }
 
     @GetMapping("/owner")
