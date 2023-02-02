@@ -1,10 +1,14 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 
 @Controller
+@AllArgsConstructor
 public class BookingServiceImplementation implements BookingService {
+    private final BookingRepository bookingRepository;
     @Override
     public BookingDto addNewBooking(BookingDto bookingDto, int userId) {
         return null;

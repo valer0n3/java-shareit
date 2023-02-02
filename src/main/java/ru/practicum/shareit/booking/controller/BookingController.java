@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exception.IncorrectInputException;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/bookings")
@@ -43,13 +46,17 @@ public class BookingController {
 
     @GetMapping
     public BookingDto getAllBookingsOfCurrentUser(@RequestHeader(X_SHARER_USER_ID) int userId,
-                                                  @RequestParam String state) {
+                                                  @RequestParam(defaultValue = "all") String state) {
+        BookingStatusEnum bookingStatus = Optional.ofNullable(BookingStatusEnum.transferStateToEnum(state))
+                .orElseThrow(() -> new IncorrectInputException(String.format("State input: %s is incorrect", state)));
         return null;
     }
 
     @GetMapping("/owner")
     public BookingDto getAllBookingsOfAllUserItems(@RequestHeader(X_SHARER_USER_ID) int userId,
-                                                   @RequestParam String state) {
+                                                   @RequestParam(defaultValue = "all") String state) {
+        BookingStatusEnum bookingStatus = Optional.ofNullable(BookingStatusEnum.transferStateToEnum(state))
+                .orElseThrow(() -> new IncorrectInputException(String.format("State input: %s is incorrect", state)));
         return null;
     }
 }
