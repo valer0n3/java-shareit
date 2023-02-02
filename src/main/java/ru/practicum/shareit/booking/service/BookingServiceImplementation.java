@@ -88,22 +88,22 @@ public class BookingServiceImplementation implements BookingService {
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("User with ID: %d is not existed", userId)));
         if (state.equals(BookingStatusEnum.ALL)) {
-            //todo
+            //todo + sort
             return null;
         } else if (state.equals(BookingStatusEnum.CURRENT)) {
-            //todo
+            //todo + sort
             return null;
         } else if (state.equals(BookingStatusEnum.PAST)) {
-            //todo
+            //todo + sort
             return null;
         } else if (state.equals(BookingStatusEnum.FUTURE)) {
-            //todo
+            //todo + sort
             return null;
         } else if (state.equals(BookingStatusEnum.WAITING)) {
-            //todo
+            //todo + sort
             return null;
         } else if (state.equals(BookingStatusEnum.REJECTED)) {
-            //todo
+            //todo + sort
             return null;
         } else
             throw new IncorrectInputException(String.format("Booking State: %s is incorrect", state));
