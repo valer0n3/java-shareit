@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.IncorrectInputException;
@@ -26,22 +27,22 @@ public class BookingController {
     private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
-    public BookingDto addNewBooking(@Valid @RequestBody BookingDto bookingDto,
+    public BookingDto addNewBooking(@Valid @RequestBody NewBookingDto newBookingDto,
                                     @RequestHeader(X_SHARER_USER_ID) int userId) {
-        return null;
+        return bookingService.addNewBooking(newBookingDto, userId);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto confirmBookingRequest(@RequestBody BookingDto bookingDto,
-                                            @RequestHeader(X_SHARER_USER_ID) int userId,
-                                            @PathVariable int bookingId,
-                                            @RequestParam boolean isApproved) {
-        return null;
+    public BookingDto confirmBookingRequest(
+            @RequestHeader(X_SHARER_USER_ID) int userId,
+            @PathVariable int bookingId,
+            @RequestParam boolean approved) {
+        return bookingService.confirmBookingRequest(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDto getBookingById(@PathVariable int bookingId, @RequestHeader(X_SHARER_USER_ID) int userId) {
-        return null;
+        return bookingService.getBookingById(bookingId, userId);
     }
 
     @GetMapping

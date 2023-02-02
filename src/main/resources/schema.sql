@@ -54,7 +54,7 @@ ALTER TABLE items
 
 CREATE TABLE IF NOT EXISTS bookings
 (
-    bookings_id BIGINT NOT NULL
+    bookings_id BIGSERIAL NOT NULL
         PRIMARY KEY,
     start_date  TIMESTAMP,
     end_date    TIMESTAMP,
