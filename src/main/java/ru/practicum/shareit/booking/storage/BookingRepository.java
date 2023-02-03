@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.storage;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
@@ -50,4 +51,13 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 " +
             "AND (i.status = ?2) ORDER BY i.start DESC")
     List<Booking> getBookingsOfItemsOwner(int ownerId, String bookingStatus);
+
+    //dates
+    @Query(value = "SELECT * FROM bookings  WHERE item_id = ?1 " +
+            "AND (end_date < CURRENT_TIMESTAMP) ORDER BY end_date DESC LIMIT 1", nativeQuery = true)
+    Booking searchLatestBooking(int itemId);
+
+    @Query(value = "SELECT * FROM bookings  WHERE item_id = ?1 " +
+            "AND (start_date > CURRENT_TIMESTAMP) ORDER BY start_date ASC LIMIT 1", nativeQuery = true)
+    Booking searchNearestBooking(int itemId);
 }

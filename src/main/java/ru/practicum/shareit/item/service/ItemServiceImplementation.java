@@ -2,9 +2,12 @@ package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
+import ru.practicum.shareit.item.dto.ItemWithBookingDatesDTO;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -23,6 +26,7 @@ public class ItemServiceImplementation implements ItemService {
     private final ItemMapper itemMapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
@@ -53,11 +57,17 @@ public class ItemServiceImplementation implements ItemService {
     }
 
     @Override
-    public ItemDto getItemById(int itemId) {
-        return itemMapper.mapItemToItemDto(itemRepository.findById(itemId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId))));
-
-
+    public ItemWithBookingDatesDTO getItemById(int itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId)));
+       /* return itemMappermapItemToItemDto(itemRepository.findById(itemId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId))));*/
+        Booking latestBooking = bookingRepository.searchLatestBooking(itemId);
+        Booking nearestBooking = bookingRepository.searchNearestBooking(itemId);
+        //  System.out.println("************-------- " + latestBooking);
+        ItemWithBookingDatesDTO testItem = itemMapper
+                .mapItemToItemWithBookingDatesDTO(item, latestBooking, nearestBooking);
+        return testItem;
     }
 
     @Override
