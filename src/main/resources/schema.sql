@@ -58,10 +58,10 @@ CREATE TABLE IF NOT EXISTS bookings
         PRIMARY KEY,
     start_date  TIMESTAMP,
     end_date    TIMESTAMP,
-    booker_id   BIGINT NOT NULL
+    booker_id   BIGINT    NOT NULL
         CONSTRAINT bookings_users_fk
             REFERENCES users,
-    item_id     BIGINT NOT NULL
+    item_id     BIGINT    NOT NULL
         CONSTRAINT bookings_items_fk
             REFERENCES items,
     status      VARCHAR
@@ -72,16 +72,17 @@ ALTER TABLE bookings
 
 CREATE TABLE IF NOT EXISTS comments
 (
-    comments_id BIGSERIAL
+    comments_id  BIGSERIAL
         CONSTRAINT comments_pk
             PRIMARY KEY,
-    text        VARCHAR,
-    item_id     BIGINT
+    text         VARCHAR,
+    item_id      BIGINT
         CONSTRAINT comments_items_fk
             REFERENCES items,
-    author_id   BIGINT
+    author_id    BIGINT
         CONSTRAINT comments_users_fk
-            REFERENCES users
+            REFERENCES users,
+    created_date TIMESTAMP
 );
 
 ALTER TABLE comments

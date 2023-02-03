@@ -5,17 +5,23 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingOwnerDTO;
 import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDatesDTO;
+import ru.practicum.shareit.item.dto.mapper.CommentMapper;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.item.storage.ItemStrorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,9 +32,11 @@ public class ItemServiceImplementation implements ItemService {
     private final ItemStrorage itemStorage;
     private final ItemMapper itemMapper;
     private final BookingMapper bookingMapper;
+    private final CommentMapper commentMapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
@@ -64,7 +72,6 @@ public class ItemServiceImplementation implements ItemService {
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId)));
         BookingOwnerDTO lastBooking;
         BookingOwnerDTO nextBooking;
-
         if (userId == item.getOwner().getId()) {
             lastBooking = bookingMapper
                     .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(itemId));
@@ -110,5 +117,21 @@ public class ItemServiceImplementation implements ItemService {
         }
         return itemRepository.searchItem(text).stream()
                 .map((itemMapper::mapItemToItemDto)).collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto addComment(CommentDto commentDto, int itemId, int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId)));
+        bookingRepository.checkIfUserBookedItem(userId, itemId)
+                .orElseThrow(() -> new IncorrectInputException(String
+                        .format("User ID: %d did not book item ID: %d", userId, itemId)));
+        Comment comment = commentMapper.mapCommentDtoToComment(commentDto);
+        comment.setItem(item);
+        comment.setCommentAuthor(user);
+        comment.setCreated(LocalDateTime.now());
+        return commentMapper.mapCommentToCommentDto(commentRepository.save(comment));
     }
 }

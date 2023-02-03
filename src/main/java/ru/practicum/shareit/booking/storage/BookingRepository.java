@@ -1,12 +1,12 @@
 package ru.practicum.shareit.booking.storage;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query(value = "SELECT * FROM bookings  WHERE booker_id = ?1 " +
@@ -61,4 +61,9 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query(value = "SELECT * FROM bookings  WHERE item_id = ?1 " +
             "AND (start_date > CURRENT_TIMESTAMP) ORDER BY start_date ASC LIMIT 1", nativeQuery = true)
     Booking searchNearestBooking(int itemId);
+
+    @Query(value = "SELECT * FROM bookings WHERE booker_id = ?1 AND item_id = ?2 " +
+            "AND start_date < CURRENT_TIMESTAMP " +
+            "AND (status = 'APPROVED')", nativeQuery = true)
+    Optional<Booking> checkIfUserBookedItem(int userId, int itemId);
 }
