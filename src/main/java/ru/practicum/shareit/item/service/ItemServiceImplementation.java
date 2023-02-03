@@ -2,7 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.dto.BookingOwnerDTO;
+import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImplementation implements ItemService {
     private final ItemStrorage itemStorage;
     private final ItemMapper itemMapper;
+    private final BookingMapper bookingMapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
@@ -60,20 +62,19 @@ public class ItemServiceImplementation implements ItemService {
     public ItemWithBookingDatesDTO getItemById(int itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId)));
-       /* return itemMappermapItemToItemDto(itemRepository.findById(itemId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId))));*/
-        Booking latestBooking = bookingRepository.searchLatestBooking(itemId);
-        Booking nearestBooking = bookingRepository.searchNearestBooking(itemId);
-        //  System.out.println("************-------- " + latestBooking);
-        ItemWithBookingDatesDTO testItem = itemMapper
-                .mapItemToItemWithBookingDatesDTO(item, latestBooking, nearestBooking);
-        return testItem;
+        BookingOwnerDTO lastBooking = bookingMapper
+                .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(itemId));
+        BookingOwnerDTO nextBooking = bookingMapper
+                .mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(itemId));
+        return itemMapper
+                .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking);
     }
 
     @Override
     public List<ItemDto> getAllItemsForOwner(int userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
+        List<Item> items = itemRepository.getAllItemsForOwner(userId);
         return itemRepository.getAllItemsForOwner(userId).stream()
                 .map((itemMapper::mapItemToItemDto)).collect(Collectors.toList());
     }

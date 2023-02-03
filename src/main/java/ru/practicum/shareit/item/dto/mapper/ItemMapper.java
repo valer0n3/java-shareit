@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.dto.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.dto.BookingOwnerDTO;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDatesDTO;
@@ -22,9 +22,8 @@ public interface ItemMapper {
     @Mapping(target = "name", source = "item.name")
     @Mapping(target = "description", source = "item.description")
     @Mapping(target = "available", source = "item.available")
-    @Mapping(target = "description", source = "item.description")
-    @Mapping(target = "available", source = "item.available")
+
     ItemWithBookingDatesDTO mapItemToItemWithBookingDatesDTO(
-            Item item, Booking lastBooking, Booking nextBooking);
+            Item item, BookingOwnerDTO lastBooking, BookingOwnerDTO nextBooking);
 }
 
