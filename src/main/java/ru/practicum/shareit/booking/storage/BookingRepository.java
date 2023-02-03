@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.storage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.List;
@@ -30,4 +29,25 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query(value = "SELECT * FROM bookings WHERE booker_id = ?1 " +
             "AND (status = ?2) ORDER BY start_date DESC", nativeQuery = true)
     List<Booking> getBookingsOfCurrentUser(int userID, String bookingStatus);
+    //************************
+
+    @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 ORDER BY i.start DESC")
+    List<Booking> getAllBookingsOfItemsOwner(int ownerId);
+
+    @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 " +
+            "AND (i.start < CURRENT_TIMESTAMP) " +
+            "AND (i.end > current_timestamp ) ORDER BY i.start DESC")
+    List<Booking> getCurrentBookingsOfItemsOwner(int ownerId);
+
+    @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 " +
+            "AND (i.end < current_timestamp) ORDER BY i.start DESC")
+    List<Booking> getPastBookingsOfItemsOwner(int ownerId);
+
+    @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 " +
+            "AND (i.start > CURRENT_TIMESTAMP) ORDER BY i.start DESC")
+    List<Booking> getFutureBookingsOfItemsOwner(int ownerId);
+
+    @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 " +
+            "AND (i.status = ?2) ORDER BY i.start DESC")
+    List<Booking> getBookingsOfItemsOwner(int ownerId, String bookingStatus);
 }

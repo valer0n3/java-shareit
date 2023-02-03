@@ -37,14 +37,14 @@ public class BookingServiceImplementation implements BookingService {
                         .format("Item with ID: %d is not existed", newBookingDto.getItemId())));
         System.out.println("********---------------" + item.getOwner().getId() + " and " + userId);
         if (item.getOwner().getId() == userId) {
-            throw new IncorrectInputException("User can't book hiw own item");
+            throw new ObjectNotFoundException("User can't book hiw own item");
         }
         if (!item.getAvailable()) {
             throw new IncorrectInputException("Item is unavailable");
         }
         if (newBookingDto.getEnd().isBefore(LocalDateTime.now()) ||
-        newBookingDto.getEnd().isBefore(newBookingDto.getStart()) ||
-        newBookingDto.getStart().isBefore(LocalDateTime.now())) {
+                newBookingDto.getEnd().isBefore(newBookingDto.getStart()) ||
+                newBookingDto.getStart().isBefore(LocalDateTime.now())) {
             throw new IncorrectInputException("Booking dates are incorrect");
         }
         Booking booking = bookingMapper.mapNewBookingDtoToBooking(newBookingDto);
@@ -63,7 +63,7 @@ public class BookingServiceImplementation implements BookingService {
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("Booking with ID: %d is not existed", bookingId)));
         if (booking.getItem().getOwner().getId() != userId) {
-            throw new IncorrectInputException(String
+            throw new ObjectNotFoundException(String
                     .format("User with ID: %d is not owner of Item with ID: %d", userId, booking.getItem().getId()));
         }
         if (!booking.getStatus().equals(BookingStatusEnum.WAITING)) {
@@ -86,7 +86,7 @@ public class BookingServiceImplementation implements BookingService {
         if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId) {
             return bookingMapper.mapBookingToBookingDTO(booking);
         } else {
-            throw new IncorrectInputException(String
+            throw new ObjectNotFoundException(String
                     .format("User ID: %d can't access booking with ID: %d", userId, bookingId));
         }
     }
@@ -124,23 +124,23 @@ public class BookingServiceImplementation implements BookingService {
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("User with ID: %d is not existed", userId)));
         if (state.equals(BookingStatusEnum.ALL)) {
-            //todo + sort
-            return null;
+            return bookingRepository.getAllBookingsOfItemsOwner(userId).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else if (state.equals(BookingStatusEnum.CURRENT)) {
-            //todo + sort
-            return null;
+            return bookingRepository.getCurrentBookingsOfItemsOwner(userId).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else if (state.equals(BookingStatusEnum.PAST)) {
-            //todo + sort
-            return null;
+            return bookingRepository.getPastBookingsOfItemsOwner(userId).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else if (state.equals(BookingStatusEnum.FUTURE)) {
-            //todo + sort
-            return null;
+            return bookingRepository.getFutureBookingsOfItemsOwner(userId).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else if (state.equals(BookingStatusEnum.WAITING)) {
-            //todo + sort
-            return null;
+            return bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.WAITING.name()).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else if (state.equals(BookingStatusEnum.REJECTED)) {
-            //todo + sort
-            return null;
+            return bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.REJECTED.name()).stream()
+                    .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else
             throw new UnsupportedStatus(String.format("Booking State: %s", state));
     }

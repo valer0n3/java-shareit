@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotBlank;
@@ -9,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
-public class ItemDto {
+public class ItemWithBookingDatesDTO {
     private int id;
     @NotBlank
     private String name;
@@ -18,4 +19,6 @@ public class ItemDto {
     @NotNull
     private Boolean available;
     private ItemRequest request;
+    private BookingDto latestBooking;
+    private BookingDto nearestBooking;
 }

@@ -56,6 +56,8 @@ public class ItemServiceImplementation implements ItemService {
     public ItemDto getItemById(int itemId) {
         return itemMapper.mapItemToItemDto(itemRepository.findById(itemId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId))));
+
+
     }
 
     @Override
