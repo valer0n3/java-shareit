@@ -59,24 +59,48 @@ public class ItemServiceImplementation implements ItemService {
     }
 
     @Override
-    public ItemWithBookingDatesDTO getItemById(int itemId) {
+    public ItemWithBookingDatesDTO getItemById(int itemId, int userId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId)));
-        BookingOwnerDTO lastBooking = bookingMapper
-                .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(itemId));
-        BookingOwnerDTO nextBooking = bookingMapper
-                .mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(itemId));
+        BookingOwnerDTO lastBooking;
+        BookingOwnerDTO nextBooking;
+
+        if (userId == item.getOwner().getId()) {
+            lastBooking = bookingMapper
+                    .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(itemId));
+            nextBooking = bookingMapper
+                    .mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(itemId));
+        } else {
+            lastBooking = null;
+            nextBooking = null;
+        }
         return itemMapper
                 .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking);
     }
 
     @Override
-    public List<ItemDto> getAllItemsForOwner(int userId) {
+    public List<ItemWithBookingDatesDTO> getAllItemsForOwner(int userId) {
+        List<ItemWithBookingDatesDTO> ItemWithBookingDatesDTOList = new ArrayList<>();
         userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
         List<Item> items = itemRepository.getAllItemsForOwner(userId);
-        return itemRepository.getAllItemsForOwner(userId).stream()
-                .map((itemMapper::mapItemToItemDto)).collect(Collectors.toList());
+        BookingOwnerDTO lastBooking;
+        BookingOwnerDTO nextBooking;
+        for (Item item : items) {
+            if (userId == item.getOwner().getId()) {
+                lastBooking = bookingMapper
+                        .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(item.getId()));
+                nextBooking = bookingMapper
+                        .mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(item.getId()));
+            } else {
+                lastBooking = null;
+                nextBooking = null;
+            }
+            ItemWithBookingDatesDTO itemWithBookingDatesDTO = itemMapper
+                    .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking);
+            ItemWithBookingDatesDTOList.add(itemWithBookingDatesDTO);
+        }
+        return ItemWithBookingDatesDTOList;
     }
 
     @Override

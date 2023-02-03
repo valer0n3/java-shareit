@@ -136,10 +136,10 @@ public class BookingServiceImplementation implements BookingService {
             return bookingRepository.getFutureBookingsOfItemsOwner(userId).stream()
                     .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else if (state.equals(BookingStatusEnum.WAITING)) {
-            return bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.WAITING.name()).stream()
+            return bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.WAITING).stream()
                     .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else if (state.equals(BookingStatusEnum.REJECTED)) {
-            return bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.REJECTED.name()).stream()
+            return bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.REJECTED).stream()
                     .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else
             throw new UnsupportedStatus(String.format("Booking State: %s", state));

@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.storage;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 " +
             "AND (i.status = ?2) ORDER BY i.start DESC")
-    List<Booking> getBookingsOfItemsOwner(int ownerId, String bookingStatus);
+    List<Booking> getBookingsOfItemsOwner(int ownerId, BookingStatusEnum bookingStatus);
 
     //dates
     @Query(value = "SELECT * FROM bookings  WHERE item_id = ?1 " +

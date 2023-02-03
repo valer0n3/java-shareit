@@ -38,12 +38,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemWithBookingDatesDTO getItemById(@PathVariable int itemId) {
-        return itemservice.getItemById(itemId);
+    public ItemWithBookingDatesDTO getItemById(@PathVariable int itemId,
+                                               @RequestHeader(X_SHARER_USER_ID) int userId) {
+        return itemservice.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemsForOwner(@RequestHeader(X_SHARER_USER_ID) int userId) {
+    public List<ItemWithBookingDatesDTO> getAllItemsForOwner(@RequestHeader(X_SHARER_USER_ID) int userId) {
         return itemservice.getAllItemsForOwner(userId);
     }
 

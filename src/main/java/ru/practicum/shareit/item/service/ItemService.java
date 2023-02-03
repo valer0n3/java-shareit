@@ -11,9 +11,9 @@ public interface ItemService {
 
     ItemPatchDto updateItem(ItemPatchDto itemPatchDto, int userId, int itemId);
 
-    ItemWithBookingDatesDTO getItemById(int itemId);
+    ItemWithBookingDatesDTO getItemById(int itemId, int userId);
 
-    List<ItemDto> getAllItemsForOwner(int userID);
+    List<ItemWithBookingDatesDTO> getAllItemsForOwner(int userID);
 
     List<ItemDto> searchItem(String text);
 }
