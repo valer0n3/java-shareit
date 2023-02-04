@@ -84,7 +84,6 @@ public class ItemServiceImplementation implements ItemService {
         List<Comment> comment1 = commentRepository.getCommentsOfItem(item.getId());
         List<CommentDto> comment = commentRepository.getCommentsOfItem(item.getId())
                 .stream().map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
-        System.out.println("%%%%%%%%%%%%%% " + comment);
         return itemMapper
                 .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking, comment);
     }

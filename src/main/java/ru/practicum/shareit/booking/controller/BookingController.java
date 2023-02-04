@@ -14,7 +14,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.exception.UnsupportedStatus;
 
 import javax.validation.Valid;
@@ -57,7 +56,7 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingsOfAllUserItems(@RequestHeader(X_SHARER_USER_ID) int userId,
-                                                   @RequestParam(defaultValue = "all") String state) {
+                                                         @RequestParam(defaultValue = "all") String state) {
         BookingStatusEnum bookingStatus = Optional.ofNullable(BookingStatusEnum.transferStateToEnum(state))
                 .orElseThrow(() -> new UnsupportedStatus(String.format("Unknown state: %s", state)));
         return bookingService.getAllBookingsOfAllUserItems(userId, bookingStatus);

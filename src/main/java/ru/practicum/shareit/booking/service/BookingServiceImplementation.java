@@ -35,7 +35,6 @@ public class BookingServiceImplementation implements BookingService {
         Item item = itemRepository.findById(newBookingDto.getItemId())
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("Item with ID: %d is not existed", newBookingDto.getItemId())));
-        System.out.println("********---------------" + item.getOwner().getId() + " and " + userId);
         if (item.getOwner().getId() == userId) {
             throw new ObjectNotFoundException("User can't book hiw own item");
         }

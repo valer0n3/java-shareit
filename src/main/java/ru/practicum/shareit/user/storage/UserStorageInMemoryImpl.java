@@ -40,7 +40,6 @@ public class UserStorageInMemoryImpl implements UserStorage {
         if (user.getEmail() != null) {
             userHashMap.get(id).setEmail(user.getEmail());
         }
-        System.out.println(userHashMap.get(id));
         return userHashMap.get(id);
     }
 

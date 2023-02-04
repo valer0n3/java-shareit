@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -32,5 +31,4 @@ public class ItemRequest {
     @ManyToOne
     @JoinColumn(name = "requestor_id")
     private User requestor;
-   // private LocalDateTime created;
 }
