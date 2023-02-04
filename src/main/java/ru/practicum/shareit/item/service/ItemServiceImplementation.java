@@ -81,8 +81,12 @@ public class ItemServiceImplementation implements ItemService {
             lastBooking = null;
             nextBooking = null;
         }
+        List<Comment> comment1 = commentRepository.getCommentsOfItem(item.getId());
+        List<CommentDto> comment = commentRepository.getCommentsOfItem(item.getId())
+                .stream().map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
+        System.out.println("%%%%%%%%%%%%%% " + comment);
         return itemMapper
-                .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking);
+                .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking, comment);
     }
 
     @Override
@@ -103,8 +107,10 @@ public class ItemServiceImplementation implements ItemService {
                 lastBooking = null;
                 nextBooking = null;
             }
+            List<CommentDto> comment = commentRepository.getCommentsOfItem(item.getId())
+                    .stream().map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
             ItemWithBookingDatesDTO itemWithBookingDatesDTO = itemMapper
-                    .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking);
+                    .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking, comment);
             ItemWithBookingDatesDTOList.add(itemWithBookingDatesDTO);
         }
         return ItemWithBookingDatesDTOList;

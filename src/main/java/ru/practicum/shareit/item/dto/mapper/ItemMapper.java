@@ -3,10 +3,14 @@ package ru.practicum.shareit.item.dto.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.shareit.booking.dto.BookingOwnerDTO;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDatesDTO;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
@@ -24,6 +28,6 @@ public interface ItemMapper {
     @Mapping(target = "available", source = "item.available")
 
     ItemWithBookingDatesDTO mapItemToItemWithBookingDatesDTO(
-            Item item, BookingOwnerDTO lastBooking, BookingOwnerDTO nextBooking);
+            Item item, BookingOwnerDTO lastBooking, BookingOwnerDTO nextBooking, List<CommentDto> comments);
 }
 
