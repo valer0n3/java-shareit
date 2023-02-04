@@ -10,7 +10,7 @@ import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
-import ru.practicum.shareit.item.dto.ItemWithBookingDatesDTO;
+import ru.practicum.shareit.item.dto.ItemWithBookingDatesDto;
 import ru.practicum.shareit.item.dto.mapper.CommentMapper;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -65,7 +65,7 @@ public class ItemServiceImplementation implements ItemService {
     }
 
     @Override
-    public ItemWithBookingDatesDTO getItemById(int itemId, int userId) {
+    public ItemWithBookingDatesDto getItemById(int itemId, int userId) {
         Item item = getItemById(itemId);
         BookingOwnerDTO lastBooking;
         BookingOwnerDTO nextBooking;
@@ -82,8 +82,8 @@ public class ItemServiceImplementation implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingDatesDTO> getAllItemsForOwner(int userId) {
-        List<ItemWithBookingDatesDTO> ItemWithBookingDatesDTOList = new ArrayList<>();
+    public List<ItemWithBookingDatesDto> getAllItemsForOwner(int userId) {
+        List<ItemWithBookingDatesDto> itemWithBookingDatesDtoList = new ArrayList<>();
         getUserById(userId);
         List<Item> items = itemRepository.getAllItemsForOwner(userId);
         BookingOwnerDTO lastBooking;
@@ -97,11 +97,11 @@ public class ItemServiceImplementation implements ItemService {
                 nextBooking = null;
             }
             List<CommentDto> comment = getListOfComments(item);
-            ItemWithBookingDatesDTO itemWithBookingDatesDTO = itemMapper
+            ItemWithBookingDatesDto itemWithBookingDatesDTO = itemMapper
                     .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking, comment);
-            ItemWithBookingDatesDTOList.add(itemWithBookingDatesDTO);
+            itemWithBookingDatesDtoList.add(itemWithBookingDatesDTO);
         }
-        return ItemWithBookingDatesDTOList;
+        return itemWithBookingDatesDtoList;
     }
 
     @Override

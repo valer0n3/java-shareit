@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
-import ru.practicum.shareit.item.dto.ItemWithBookingDatesDTO;
+import ru.practicum.shareit.item.dto.ItemWithBookingDatesDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -39,13 +39,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemWithBookingDatesDTO getItemById(@PathVariable int itemId,
+    public ItemWithBookingDatesDto getItemById(@PathVariable int itemId,
                                                @RequestHeader(X_SHARER_USER_ID) int userId) {
         return itemservice.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemWithBookingDatesDTO> getAllItemsForOwner(@RequestHeader(X_SHARER_USER_ID) int userId) {
+    public List<ItemWithBookingDatesDto> getAllItemsForOwner(@RequestHeader(X_SHARER_USER_ID) int userId) {
         return itemservice.getAllItemsForOwner(userId);
     }
 
