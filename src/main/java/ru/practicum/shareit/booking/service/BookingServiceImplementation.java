@@ -30,8 +30,7 @@ public class BookingServiceImplementation implements BookingService {
 
     @Override
     public BookingDto addNewBooking(NewBookingDto newBookingDto, int userId) {
-        User booker = userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User with ID: %d is not existed", userId)));
+        User booker = getUserById(userId);
         Item item = itemRepository.findById(newBookingDto.getItemId())
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("Item with ID: %d is not existed", newBookingDto.getItemId())));
@@ -55,12 +54,8 @@ public class BookingServiceImplementation implements BookingService {
 
     @Override
     public BookingDto confirmBookingRequest(int userId, int bookingId, boolean isApproved) {
-        User booker = userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String
-                        .format("User with ID: %d is not existed", userId)));
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ObjectNotFoundException(String
-                        .format("Booking with ID: %d is not existed", bookingId)));
+        User booker = getUserById(userId);
+        Booking booking = getBookingById(bookingId);
         if (booking.getItem().getOwner().getId() != userId) {
             throw new ObjectNotFoundException(String
                     .format("User with ID: %d is not owner of Item with ID: %d", userId, booking.getItem().getId()));
@@ -79,9 +74,7 @@ public class BookingServiceImplementation implements BookingService {
 
     @Override
     public BookingDto getBookingById(int bookingId, int userId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ObjectNotFoundException(String
-                        .format("Booking with ID: %d is not existed", bookingId)));
+        Booking booking = getBookingById(bookingId);
         if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId) {
             return bookingMapper.mapBookingToBookingDTO(booking);
         } else {
@@ -92,9 +85,7 @@ public class BookingServiceImplementation implements BookingService {
 
     @Override
     public List<BookingDto> getAllBookingsOfCurrentUser(int userId, BookingStatusEnum state) {
-        User booker = userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String
-                        .format("User with ID: %d is not existed", userId)));
+        User booker = getUserById(userId);
         if (state.equals(BookingStatusEnum.ALL)) {
             return bookingRepository.getAllBookingsOfCurrentUser(userId).stream()
                     .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
@@ -119,9 +110,7 @@ public class BookingServiceImplementation implements BookingService {
 
     @Override
     public List<BookingDto> getAllBookingsOfAllUserItems(int userId, BookingStatusEnum state) {
-        User booker = userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String
-                        .format("User with ID: %d is not existed", userId)));
+        User booker = getUserById(userId);
         if (state.equals(BookingStatusEnum.ALL)) {
             return bookingRepository.getAllBookingsOfItemsOwner(userId).stream()
                     .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
@@ -142,5 +131,16 @@ public class BookingServiceImplementation implements BookingService {
                     .map(bookingMapper::mapBookingToBookingDTO).collect(Collectors.toList());
         } else
             throw new UnsupportedStatus(String.format("Booking State: %s", state));
+    }
+
+    private User getUserById(int userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User with ID: %d is not existed", userId)));
+    }
+
+    private Booking getBookingById(int bookingId) {
+        return bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ObjectNotFoundException(String
+                        .format("Booking with ID: %d is not existed", bookingId)));
     }
 }

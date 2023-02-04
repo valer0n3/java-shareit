@@ -40,8 +40,7 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
+        User user = getUserById(userId);
         Item item = itemMapper.mapItemDtoToItem(itemDto);
         item.setOwner(user);
         return itemMapper.mapItemToItemDto(itemRepository.save(item));
@@ -49,9 +48,8 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public ItemPatchDto updateItem(ItemPatchDto itemPatchDto, int userId, int itemId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Item Id %d is not existed", itemId)));
-        if (item.getOwner().getId() != userId) {
+        Item item = getItemById(itemId);
+        if (!checkIfItemOwnerEqualsUserId(item, userId)) {
             throw new ObjectNotFoundException("Item does not belong to User and can not be updated!");
         }
         if (itemPatchDto.getName() != null && !itemPatchDto.getName().isBlank()) {
@@ -68,22 +66,17 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public ItemWithBookingDatesDTO getItemById(int itemId, int userId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId)));
+        Item item = getItemById(itemId);
         BookingOwnerDTO lastBooking;
         BookingOwnerDTO nextBooking;
-        if (userId == item.getOwner().getId()) {
-            lastBooking = bookingMapper
-                    .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(itemId));
-            nextBooking = bookingMapper
-                    .mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(itemId));
+        if (checkIfItemOwnerEqualsUserId(item, userId)) {
+            lastBooking = getLastBooking(item.getId());
+            nextBooking = getNextBooking(item.getId());
         } else {
             lastBooking = null;
             nextBooking = null;
         }
-        List<Comment> comment1 = commentRepository.getCommentsOfItem(item.getId());
-        List<CommentDto> comment = commentRepository.getCommentsOfItem(item.getId())
-                .stream().map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
+        List<CommentDto> comment = getListOfComments(item);
         return itemMapper
                 .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking, comment);
     }
@@ -91,23 +84,19 @@ public class ItemServiceImplementation implements ItemService {
     @Override
     public List<ItemWithBookingDatesDTO> getAllItemsForOwner(int userId) {
         List<ItemWithBookingDatesDTO> ItemWithBookingDatesDTOList = new ArrayList<>();
-        userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
+        getUserById(userId);
         List<Item> items = itemRepository.getAllItemsForOwner(userId);
         BookingOwnerDTO lastBooking;
         BookingOwnerDTO nextBooking;
         for (Item item : items) {
-            if (userId == item.getOwner().getId()) {
-                lastBooking = bookingMapper
-                        .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(item.getId()));
-                nextBooking = bookingMapper
-                        .mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(item.getId()));
+            if (checkIfItemOwnerEqualsUserId(item, userId)) {
+                lastBooking = getLastBooking(item.getId());
+                nextBooking = getNextBooking(item.getId());
             } else {
                 lastBooking = null;
                 nextBooking = null;
             }
-            List<CommentDto> comment = commentRepository.getCommentsOfItem(item.getId())
-                    .stream().map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
+            List<CommentDto> comment = getListOfComments(item);
             ItemWithBookingDatesDTO itemWithBookingDatesDTO = itemMapper
                     .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking, comment);
             ItemWithBookingDatesDTOList.add(itemWithBookingDatesDTO);
@@ -126,10 +115,8 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public CommentDto addComment(CommentDto commentDto, int itemId, int userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", itemId)));
+        User user = getUserById(userId);
+        Item item = getItemById(itemId);
         bookingRepository.checkIfUserBookedItem(userId, itemId)
                 .orElseThrow(() -> new IncorrectInputException(String
                         .format("User ID: %d did not book item ID: %d", userId, itemId)));
@@ -138,5 +125,33 @@ public class ItemServiceImplementation implements ItemService {
         comment.setCommentAuthor(user);
         comment.setCreated(LocalDateTime.now());
         return commentMapper.mapCommentToCommentDto(commentRepository.save(comment));
+    }
+
+    private User getUserById(int userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User Id %d is not existed", userId)));
+    }
+
+    private Item getItemById(int itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Item Id %d is not existed", itemId)));
+    }
+
+    private BookingOwnerDTO getLastBooking(int itemId) {
+        return bookingMapper
+                .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(itemId));
+    }
+
+    private BookingOwnerDTO getNextBooking(int itemId) {
+        return bookingMapper.mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(itemId));
+    }
+
+    private boolean checkIfItemOwnerEqualsUserId(Item item, int userId) {
+        return item.getOwner().getId() == userId;
+    }
+
+    private List<CommentDto> getListOfComments(Item item) {
+        return commentRepository.getCommentsOfItem(item.getId())
+                .stream().map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
     }
 }
