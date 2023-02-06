@@ -18,7 +18,6 @@ import ru.practicum.shareit.exception.UnsupportedStatus;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/bookings")
@@ -49,16 +48,20 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getAllBookingsOfCurrentUser(@RequestHeader(X_SHARER_USER_ID) int userId,
                                                         @RequestParam(defaultValue = "all") String state) {
-        BookingStatusEnum bookingStatus = Optional.ofNullable(BookingStatusEnum.transferStateToEnum(state))
-                .orElseThrow(() -> new UnsupportedStatus(String.format("Unknown state: %s", state)));
-        return bookingService.getAllBookingsOfCurrentUser(userId, bookingStatus);
+        return bookingService.getAllBookingsOfCurrentUser(userId, checkIfStatusIsIncorrect(state));
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingsOfAllUserItems(@RequestHeader(X_SHARER_USER_ID) int userId,
                                                          @RequestParam(defaultValue = "all") String state) {
-        BookingStatusEnum bookingStatus = Optional.ofNullable(BookingStatusEnum.transferStateToEnum(state))
-                .orElseThrow(() -> new UnsupportedStatus(String.format("Unknown state: %s", state)));
-        return bookingService.getAllBookingsOfAllUserItems(userId, bookingStatus);
+        return bookingService.getAllBookingsOfAllUserItems(userId, checkIfStatusIsIncorrect(state));
+    }
+
+    private BookingStatusEnum checkIfStatusIsIncorrect(String state) {
+        try {
+            return BookingStatusEnum.valueOf(state.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new UnsupportedStatus(String.format("Unknown state: %s", state));
+        }
     }
 }
