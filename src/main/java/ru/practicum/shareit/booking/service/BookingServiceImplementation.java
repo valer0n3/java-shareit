@@ -62,29 +62,17 @@ public class BookingServiceImplementation implements BookingService {
     public List<BookingDto> getAllBookingsOfCurrentUser(int userId, BookingStatusEnum state) {
         User booker = getUserById(userId);
         if (state.equals(BookingStatusEnum.ALL)) {
-            return bookingRepository.getAllBookingsOfCurrentUser(userId).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getAllBookingsOfCurrentUser(userId));
         } else if (state.equals(BookingStatusEnum.CURRENT)) {
-            return bookingRepository.getCurrentBookingsOfCurrentUser(userId).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getCurrentBookingsOfCurrentUser(userId));
         } else if (state.equals(BookingStatusEnum.PAST)) {
-            return bookingRepository.getPastBookingsOfCurrentUser(userId).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getPastBookingsOfCurrentUser(userId));
         } else if (state.equals(BookingStatusEnum.FUTURE)) {
-            return bookingRepository.getFutureBookingsOfCurrentUser(userId).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getFutureBookingsOfCurrentUser(userId));
         } else if (state.equals(BookingStatusEnum.WAITING)) {
-            return bookingRepository.getBookingsOfCurrentUser(userId, BookingStatusEnum.WAITING.name()).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getBookingsOfCurrentUser(userId, BookingStatusEnum.WAITING.name()));
         } else if (state.equals(BookingStatusEnum.REJECTED)) {
-            return bookingRepository.getBookingsOfCurrentUser(userId, BookingStatusEnum.REJECTED.name()).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getBookingsOfCurrentUser(userId, BookingStatusEnum.REJECTED.name()));
         } else
             throw new UnsupportedStatus(String.format("Unknown state: %s", state));
     }
@@ -93,29 +81,17 @@ public class BookingServiceImplementation implements BookingService {
     public List<BookingDto> getAllBookingsOfAllUserItems(int userId, BookingStatusEnum state) {
         User booker = getUserById(userId);
         if (state.equals(BookingStatusEnum.ALL)) {
-            return bookingRepository.getAllBookingsOfItemsOwner(userId).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getAllBookingsOfItemsOwner(userId));
         } else if (state.equals(BookingStatusEnum.CURRENT)) {
-            return bookingRepository.getCurrentBookingsOfItemsOwner(userId).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getCurrentBookingsOfItemsOwner(userId));
         } else if (state.equals(BookingStatusEnum.PAST)) {
-            return bookingRepository.getPastBookingsOfItemsOwner(userId).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getPastBookingsOfItemsOwner(userId));
         } else if (state.equals(BookingStatusEnum.FUTURE)) {
-            return bookingRepository.getFutureBookingsOfItemsOwner(userId).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getFutureBookingsOfItemsOwner(userId));
         } else if (state.equals(BookingStatusEnum.WAITING)) {
-            return bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.WAITING).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.WAITING));
         } else if (state.equals(BookingStatusEnum.REJECTED)) {
-            return bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.REJECTED).stream()
-                    .map(bookingMapper::mapBookingToBookingDTO)
-                    .collect(Collectors.toList());
+            return getListBookingDTO(bookingRepository.getBookingsOfItemsOwner(userId, BookingStatusEnum.REJECTED));
         } else
             throw new UnsupportedStatus(String.format("Booking State: %s", state));
     }
@@ -185,6 +161,12 @@ public class BookingServiceImplementation implements BookingService {
 
     private BookingDto getBookingDto(Booking booking) {
         return bookingMapper.mapBookingToBookingDTO(bookingRepository.save(booking));
+    }
+
+    private List<BookingDto> getListBookingDTO(List<Booking> booking) {
+        return booking.stream()
+                .map(bookingMapper::mapBookingToBookingDTO)
+                .collect(Collectors.toList());
     }
 }
 
