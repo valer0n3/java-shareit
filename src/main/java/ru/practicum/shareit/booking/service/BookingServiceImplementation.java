@@ -54,12 +54,8 @@ public class BookingServiceImplementation implements BookingService {
     @Override
     public BookingDto getBookingById(int bookingId, int userId) {
         Booking booking = getBookingById(bookingId);
-        if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId) {
-            return bookingMapper.mapBookingToBookingDTO(booking);
-        } else {
-            throw new ObjectNotFoundException(String
-                    .format("User ID: %d can't access booking with ID: %d", userId, bookingId));
-        }
+        checkIfUserCanAccessToBooking(booking, userId);
+        return bookingMapper.mapBookingToBookingDTO(booking);
     }
 
     @Override
@@ -179,6 +175,12 @@ public class BookingServiceImplementation implements BookingService {
         } else {
             return BookingStatusEnum.REJECTED;
         }
+    }
+
+    private void checkIfUserCanAccessToBooking(Booking booking, int userId) {
+        if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId)
+            throw new ObjectNotFoundException(String
+                    .format("User ID: %d can't access booking with ID: %d", userId, booking.getId()));
     }
 }
 
