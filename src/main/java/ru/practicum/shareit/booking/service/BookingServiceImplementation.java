@@ -38,7 +38,7 @@ public class BookingServiceImplementation implements BookingService {
         booking.setBooker(booker);
         booking.setItem(item);
         booking.setStatus(BookingStatusEnum.WAITING);
-        return bookingMapper.mapBookingToBookingDTO(bookingRepository.save(booking));
+        return getBookingDto(booking);
     }
 
     @Override
@@ -48,14 +48,14 @@ public class BookingServiceImplementation implements BookingService {
         checkIfUserIsNotItemOwner(userId, booking.getItem().getOwner().getId());
         checkIfBookingStatusIsWaiting(booking);
         booking.setStatus(approveBookingOrReject(isApproved, booking));
-        return bookingMapper.mapBookingToBookingDTO(bookingRepository.save(booking));
+        return getBookingDto(bookingRepository.save(booking));
     }
 
     @Override
     public BookingDto getBookingById(int bookingId, int userId) {
         Booking booking = getBookingById(bookingId);
         checkIfUserCanAccessToBooking(booking, userId);
-        return bookingMapper.mapBookingToBookingDTO(booking);
+        return getBookingDto(booking);
     }
 
     @Override
@@ -181,6 +181,10 @@ public class BookingServiceImplementation implements BookingService {
         if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId)
             throw new ObjectNotFoundException(String
                     .format("User ID: %d can't access booking with ID: %d", userId, booking.getId()));
+    }
+
+    private BookingDto getBookingDto(Booking booking) {
+        return bookingMapper.mapBookingToBookingDTO(bookingRepository.save(booking));
     }
 }
 
