@@ -17,7 +17,6 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
-import ru.practicum.shareit.item.storage.ItemStrorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class ItemServiceImplementation implements ItemService {
-    private final ItemStrorage itemStorage;
     private final ItemMapper itemMapper;
     private final BookingMapper bookingMapper;
     private final CommentMapper commentMapper;
@@ -152,6 +150,8 @@ public class ItemServiceImplementation implements ItemService {
 
     private List<CommentDto> getListOfComments(Item item) {
         return commentRepository.getCommentsOfItem(item.getId())
-                .stream().map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
+                .stream()
+                .map(commentMapper::mapCommentToCommentDto)
+                .collect(Collectors.toList());
     }
 }
