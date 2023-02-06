@@ -30,18 +30,10 @@ public class BookingServiceImplementation implements BookingService {
     @Override
     public BookingDto addNewBooking(NewBookingDto newBookingDto, int userId) {
         User booker = getUserById(userId);
-        Item item = itemRepository.findById(newBookingDto.getItemId())
-                .orElseThrow(() -> new ObjectNotFoundException(String
-                        .format("Item with ID: %d is not existed", newBookingDto.getItemId())));
-        if (item.getOwner().getId() == userId) {
-            throw new ObjectNotFoundException("User can't book hiw own item");
-        }
-        if (!item.getAvailable()) {
-            throw new IncorrectInputException("Item is unavailable");
-        }
-        if (newBookingDto.getEnd().isBefore(newBookingDto.getStart())) {
-            throw new IncorrectInputException("Booking dates are incorrect");
-        }
+        Item item = getItemById(newBookingDto.getItemId());
+        checkIfUserIsItemOwner(userId, item.getOwner().getId());
+        checkIfItemIsAvailable(item);
+        checkIfBookingEndDateIsAfterBookingStartDate(newBookingDto);
         Booking booking = bookingMapper.mapNewBookingDtoToBooking(newBookingDto);
         booking.setBooker(booker);
         booking.setItem(item);
@@ -53,19 +45,9 @@ public class BookingServiceImplementation implements BookingService {
     public BookingDto confirmBookingRequest(int userId, int bookingId, boolean isApproved) {
         User booker = getUserById(userId);
         Booking booking = getBookingById(bookingId);
-        if (booking.getItem().getOwner().getId() != userId) {
-            throw new ObjectNotFoundException(String
-                    .format("User with ID: %d is not owner of Item with ID: %d", userId, booking.getItem().getId()));
-        }
-        if (!booking.getStatus().equals(BookingStatusEnum.WAITING)) {
-            throw new IncorrectInputException(String
-                    .format("Booking ID: %d status is not %s", bookingId, BookingStatusEnum.WAITING));
-        }
-        if (isApproved) {
-            booking.setStatus(BookingStatusEnum.APPROVED);
-        } else {
-            booking.setStatus(BookingStatusEnum.REJECTED);
-        }
+        checkIfUserIsNotItemOwner(userId, booking.getItem().getOwner().getId());
+        checkIfBookingStatusIsWaiting(booking);
+        booking.setStatus(approveBookingOrReject(isApproved, booking));
         return bookingMapper.mapBookingToBookingDTO(bookingRepository.save(booking));
     }
 
@@ -147,9 +129,56 @@ public class BookingServiceImplementation implements BookingService {
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User with ID: %d is not existed", userId)));
     }
 
+    private Item getItemById(int itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new ObjectNotFoundException(String
+                        .format("Item with ID: %d is not existed", itemId)));
+    }
+
+    private void checkIfUserIsItemOwner(int userId, int ownerId) {
+        if (ownerId == userId) {
+            throw new ObjectNotFoundException("User can't book hiw own item");
+        }
+    }
+
+    private void checkIfUserIsNotItemOwner(int userId, int ownerId) {
+        if (ownerId != userId) {
+            throw new ObjectNotFoundException(String
+                    .format("User with ID: %d is not owner of Item with ID: %d", userId, ownerId));
+        }
+    }
+
+    public void checkIfItemIsAvailable(Item item) {
+        if (!item.getAvailable()) {
+            throw new IncorrectInputException("Item is unavailable");
+        }
+    }
+
+    private void checkIfBookingEndDateIsAfterBookingStartDate(NewBookingDto newBookingDto) {
+        if (newBookingDto.getEnd().isBefore(newBookingDto.getStart())) {
+            throw new IncorrectInputException("Booking dates are incorrect");
+        }
+    }
+
     private Booking getBookingById(int bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("Booking with ID: %d is not existed", bookingId)));
     }
+
+    private void checkIfBookingStatusIsWaiting(Booking booking) {
+        if (!booking.getStatus().equals(BookingStatusEnum.WAITING)) {
+            throw new IncorrectInputException(String
+                    .format("Booking ID: %d status is not %s", booking.getId(), BookingStatusEnum.WAITING));
+        }
+    }
+
+    private BookingStatusEnum approveBookingOrReject(boolean isApproved, Booking booking) {
+        if (isApproved) {
+            return BookingStatusEnum.APPROVED;
+        } else {
+            return BookingStatusEnum.REJECTED;
+        }
+    }
 }
+
