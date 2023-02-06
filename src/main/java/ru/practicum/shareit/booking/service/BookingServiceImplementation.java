@@ -16,7 +16,6 @@ import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,9 +39,7 @@ public class BookingServiceImplementation implements BookingService {
         if (!item.getAvailable()) {
             throw new IncorrectInputException("Item is unavailable");
         }
-        if (newBookingDto.getEnd().isBefore(LocalDateTime.now()) ||
-                newBookingDto.getEnd().isBefore(newBookingDto.getStart()) ||
-                newBookingDto.getStart().isBefore(LocalDateTime.now())) {
+        if (newBookingDto.getEnd().isBefore(newBookingDto.getStart())) {
             throw new IncorrectInputException("Booking dates are incorrect");
         }
         Booking booking = bookingMapper.mapNewBookingDtoToBooking(newBookingDto);
