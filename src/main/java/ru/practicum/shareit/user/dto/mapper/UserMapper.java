@@ -12,6 +12,4 @@ public interface UserMapper {
     User mapUserPostDtoToUser(UserPostDto userPostDto);
 
     UserPatchDto mapUserToUserPatchDTO(User user);
-
-    User mapUserPatchDtoToUser(UserPatchDto userPatchDto);
 }

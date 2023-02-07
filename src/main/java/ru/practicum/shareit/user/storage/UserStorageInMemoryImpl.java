@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public class UserStorageInMemoryImpl implements UserStorage {
-    private Map<Integer, User> userHashMap = new HashMap<>();
+    private final Map<Integer, User> userHashMap = new HashMap<>();
     private static int id;
 
     public final Map<Integer, User> getUserHashMap() {

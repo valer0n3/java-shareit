@@ -43,11 +43,11 @@ public class BookingServiceImplementation implements BookingService {
 
     @Override
     public BookingDto confirmBookingRequest(int userId, int bookingId, boolean isApproved) {
-        User booker = getUserById(userId);
+        getUserById(userId);
         Booking booking = getBookingById(bookingId);
         checkIfUserIsNotItemOwner(userId, booking.getItem().getOwner().getId());
         checkIfBookingStatusIsWaiting(booking);
-        booking.setStatus(approveBookingOrReject(isApproved, booking));
+        booking.setStatus(approveBookingOrReject(isApproved));
         return getBookingDto(bookingRepository.save(booking));
     }
 
@@ -60,7 +60,7 @@ public class BookingServiceImplementation implements BookingService {
 
     @Override
     public List<BookingDto> getAllBookingsOfCurrentUser(int userId, BookingStatusEnum state) {
-        User booker = getUserById(userId);
+        getUserById(userId);
         if (state.equals(BookingStatusEnum.ALL)) {
             return getListBookingDTO(bookingRepository.getAllBookingsOfCurrentUser(userId));
         } else if (state.equals(BookingStatusEnum.CURRENT)) {
@@ -79,7 +79,7 @@ public class BookingServiceImplementation implements BookingService {
 
     @Override
     public List<BookingDto> getAllBookingsOfAllUserItems(int userId, BookingStatusEnum state) {
-        User booker = getUserById(userId);
+        getUserById(userId);
         if (state.equals(BookingStatusEnum.ALL)) {
             return getListBookingDTO(bookingRepository.getAllBookingsOfItemsOwner(userId));
         } else if (state.equals(BookingStatusEnum.CURRENT)) {
@@ -145,7 +145,7 @@ public class BookingServiceImplementation implements BookingService {
         }
     }
 
-    private BookingStatusEnum approveBookingOrReject(boolean isApproved, Booking booking) {
+    private BookingStatusEnum approveBookingOrReject(boolean isApproved) {
         if (isApproved) {
             return BookingStatusEnum.APPROVED;
         } else {

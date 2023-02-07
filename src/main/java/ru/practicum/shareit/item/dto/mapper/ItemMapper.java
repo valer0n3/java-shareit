@@ -19,8 +19,6 @@ public interface ItemMapper {
 
     ItemPatchDto mapItemToItemPatchDto(Item item);
 
-    Item mapItemPatchDtoToItem(ItemPatchDto itemPatchDto);
-
     @Mapping(target = "id", source = "itemDto.id")
     @Mapping(target = "name", source = "itemDto.name")
     @Mapping(target = "description", source = "itemDto.description")

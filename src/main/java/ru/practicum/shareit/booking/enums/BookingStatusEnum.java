@@ -8,5 +8,5 @@ public enum BookingStatusEnum {
     ALL,
     CURRENT,
     PAST,
-    FUTURE;
+    FUTURE
 }
