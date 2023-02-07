@@ -52,7 +52,7 @@ public class ItemServiceImplementation implements ItemService {
     public ItemPatchDto updateItem(ItemPatchDto itemPatchDto, int userId, int itemId) {
         Item item = getItemById(itemId);
         checkIfItemOwnerEqualsUserId(item, userId);
-        InsertInputDataToItem(item, itemPatchDto);
+        insertInputDataToItem(item, itemPatchDto);
         return itemMapper.mapItemToItemPatchDto(itemRepository.save(item));
     }
 
@@ -115,7 +115,7 @@ public class ItemServiceImplementation implements ItemService {
         }
     }
 
-    private void InsertInputDataToItem(Item item, ItemPatchDto itemPatchDto) {
+    private void insertInputDataToItem(Item item, ItemPatchDto itemPatchDto) {
         if (itemPatchDto.getName() != null && !itemPatchDto.getName().isBlank()) {
             item.setName(itemPatchDto.getName());
         }
@@ -136,13 +136,13 @@ public class ItemServiceImplementation implements ItemService {
             nextBookingDate = Optional.empty();
         } else {
             lastBookingDate = booking.stream()
-                    .filter(booking1 -> booking1.getItem().getId() == item.getId())
-                    .filter(booking1 -> booking1.getStatus().equals(BookingStatusEnum.APPROVED))
-                    .filter(booking1 -> booking1.getEnd().isBefore(LocalDateTime.now()))
+                    .filter(bookingField -> bookingField.getItem().getId() == item.getId())
+                    .filter(bookingField -> bookingField.getStatus().equals(BookingStatusEnum.APPROVED))
+                    .filter(bookingField -> bookingField.getEnd().isBefore(LocalDateTime.now()))
                     .max(Comparator.comparing(Booking::getEnd));
             nextBookingDate = booking.stream()
-                    .filter(booking1 -> booking1.getItem().getId() == item.getId())
-                    .filter(booking1 -> booking1.getStart().isAfter(LocalDateTime.now()))
+                    .filter(bookingField -> bookingField.getItem().getId() == item.getId())
+                    .filter(bookingField -> bookingField.getStart().isAfter(LocalDateTime.now()))
                     .min(Comparator.comparing(Booking::getStart));
         }
         List<CommentDto> itemComments = comment.stream()
