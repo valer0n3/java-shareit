@@ -47,18 +47,8 @@ public class ItemServiceImplementation implements ItemService {
     @Override
     public ItemPatchDto updateItem(ItemPatchDto itemPatchDto, int userId, int itemId) {
         Item item = getItemById(itemId);
-        if (!checkIfItemOwnerEqualsUserId(item, userId)) {
-            throw new ObjectNotFoundException("Item does not belong to User and can not be updated!");
-        }
-        if (itemPatchDto.getName() != null && !itemPatchDto.getName().isBlank()) {
-            item.setName(itemPatchDto.getName());
-        }
-        if (itemPatchDto.getDescription() != null && !itemPatchDto.getDescription().isBlank()) {
-            item.setDescription(itemPatchDto.getDescription());
-        }
-        if (itemPatchDto.getAvailable() != null) {
-            item.setAvailable(itemPatchDto.getAvailable());
-        }
+        checkIfItemOwnerEqualsUserId(item, userId);
+        InsertInputDataToItem(item, itemPatchDto);
         return itemMapper.mapItemToItemPatchDto(itemRepository.save(item));
     }
 
@@ -67,7 +57,7 @@ public class ItemServiceImplementation implements ItemService {
         Item item = getItemById(itemId);
         BookingOwnerDTO lastBooking;
         BookingOwnerDTO nextBooking;
-        if (checkIfItemOwnerEqualsUserId(item, userId)) {
+        if (checkIfItemOwnerEqualsUserId2(item, userId)) { //todo refactor this method completely.
             lastBooking = getLastBooking(item.getId());
             nextBooking = getNextBooking(item.getId());
         } else {
@@ -87,7 +77,7 @@ public class ItemServiceImplementation implements ItemService {
         BookingOwnerDTO lastBooking;
         BookingOwnerDTO nextBooking;
         for (Item item : items) {
-            if (checkIfItemOwnerEqualsUserId(item, userId)) {
+            if (checkIfItemOwnerEqualsUserId2(item, userId)) { //todo refactor this method completely.
                 lastBooking = getLastBooking(item.getId());
                 nextBooking = getNextBooking(item.getId());
             } else {
@@ -144,8 +134,10 @@ public class ItemServiceImplementation implements ItemService {
         return bookingMapper.mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(itemId));
     }
 
-    private boolean checkIfItemOwnerEqualsUserId(Item item, int userId) {
-        return item.getOwner().getId() == userId;
+    private void checkIfItemOwnerEqualsUserId(Item item, int userId) {
+        if (item.getOwner().getId() != userId) {
+            throw new ObjectNotFoundException("Item does not belong to User and can not be updated!");
+        }
     }
 
     private List<CommentDto> getListOfComments(Item item) {
@@ -153,5 +145,21 @@ public class ItemServiceImplementation implements ItemService {
                 .stream()
                 .map(commentMapper::mapCommentToCommentDto)
                 .collect(Collectors.toList());
+    }
+
+    private boolean checkIfItemOwnerEqualsUserId2(Item item, int userId) {
+        return item.getOwner().getId() == userId;
+    }
+
+    private void InsertInputDataToItem(Item item, ItemPatchDto itemPatchDto) {
+        if (itemPatchDto.getName() != null && !itemPatchDto.getName().isBlank()) {
+            item.setName(itemPatchDto.getName());
+        }
+        if (itemPatchDto.getDescription() != null && !itemPatchDto.getDescription().isBlank()) {
+            item.setDescription(itemPatchDto.getDescription());
+        }
+        if (itemPatchDto.getAvailable() != null) {
+            item.setAvailable(itemPatchDto.getAvailable());
+        }
     }
 }
