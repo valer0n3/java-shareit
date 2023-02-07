@@ -64,4 +64,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "AND start_date < CURRENT_TIMESTAMP " +
             "AND (status = 'APPROVED')", nativeQuery = true)
     Optional<Booking> checkIfUserBookedItem(int userId, int itemId);
+
+    @Query("SELECT i FROM Booking i WHERE i.item.id = ?1 ORDER BY i.id")
+    List<Booking> getBookingForItem(int itemId);
+
+    @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 ORDER BY i.id")
+    List<Booking> getBookingForOwner(int ownerId);
 }
+

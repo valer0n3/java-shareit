@@ -21,11 +21,11 @@ public interface ItemMapper {
 
     Item mapItemPatchDtoToItem(ItemPatchDto itemPatchDto);
 
-    @Mapping(target = "id", source = "item.id")
-    @Mapping(target = "name", source = "item.name")
-    @Mapping(target = "description", source = "item.description")
-    @Mapping(target = "available", source = "item.available")
+    @Mapping(target = "id", source = "itemDto.id")
+    @Mapping(target = "name", source = "itemDto.name")
+    @Mapping(target = "description", source = "itemDto.description")
+    @Mapping(target = "available", source = "itemDto.available")
     ItemWithBookingDatesDto mapItemToItemWithBookingDatesDTO(
-            Item item, BookingOwnerDTO lastBooking, BookingOwnerDTO nextBooking, List<CommentDto> comments);
+            ItemDto itemDto, BookingOwnerDTO lastBooking, BookingOwnerDTO nextBooking, List<CommentDto> comments);
 }
 

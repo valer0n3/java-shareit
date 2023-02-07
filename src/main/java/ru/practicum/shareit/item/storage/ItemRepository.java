@@ -7,8 +7,10 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Integer> {
-    @Query(value = "SELECT * FROM items  WHERE owner_id = ?1 ORDER BY items.items_id", nativeQuery = true)
+    @Query("SELECT i FROM Item i WHERE i.owner.id = ?1 ORDER BY i.id")
     List<Item> getAllItemsForOwner(int ownerId);
+
+
 
     @Query(" select i from Item i " +
             "where upper(i.name) like upper(concat('%', ?1, '%')) " + "" +

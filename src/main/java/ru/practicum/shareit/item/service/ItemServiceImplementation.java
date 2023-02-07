@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingOwnerDTO;
 import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
+import ru.practicum.shareit.booking.enums.BookingStatusEnum;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.IncorrectInputException;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
@@ -22,7 +24,9 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,41 +59,21 @@ public class ItemServiceImplementation implements ItemService {
     @Override
     public ItemWithBookingDatesDto getItemById(int itemId, int userId) {
         Item item = getItemById(itemId);
-        BookingOwnerDTO lastBooking;
-        BookingOwnerDTO nextBooking;
-        if (checkIfItemOwnerEqualsUserId2(item, userId)) { //todo refactor this method completely.
-            lastBooking = getLastBooking(item.getId());
-            nextBooking = getNextBooking(item.getId());
-        } else {
-            lastBooking = null;
-            nextBooking = null;
-        }
-        List<CommentDto> comment = getListOfComments(item);
-        return itemMapper
-                .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking, comment);
+        List<Booking> booking = bookingRepository.getBookingForItem(itemId);
+        List<Comment> comment = commentRepository.getCommentForItem(itemId);
+        return addBookingAndComments(item, booking, comment, userId);
     }
 
     @Override
     public List<ItemWithBookingDatesDto> getAllItemsForOwner(int userId) {
-        List<ItemWithBookingDatesDto> itemWithBookingDatesDtoList = new ArrayList<>();
-        getUserById(userId);
         List<Item> items = itemRepository.getAllItemsForOwner(userId);
-        BookingOwnerDTO lastBooking;
-        BookingOwnerDTO nextBooking;
-        for (Item item : items) {
-            if (checkIfItemOwnerEqualsUserId2(item, userId)) { //todo refactor this method completely.
-                lastBooking = getLastBooking(item.getId());
-                nextBooking = getNextBooking(item.getId());
-            } else {
-                lastBooking = null;
-                nextBooking = null;
-            }
-            List<CommentDto> comment = getListOfComments(item);
-            ItemWithBookingDatesDto itemWithBookingDatesDTO = itemMapper
-                    .mapItemToItemWithBookingDatesDTO(item, lastBooking, nextBooking, comment);
-            itemWithBookingDatesDtoList.add(itemWithBookingDatesDTO);
-        }
-        return itemWithBookingDatesDtoList;
+        List<Booking> booking = bookingRepository.getBookingForOwner(userId);
+        List<Integer> itemIdList = items.stream()
+                .map(Item::getId).collect(Collectors.toList());
+        List<Comment> comment = commentRepository.getCommentForOwner(itemIdList);
+        return items.stream()
+                .map(item -> addBookingAndComments(item, booking, comment, userId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -161,5 +145,32 @@ public class ItemServiceImplementation implements ItemService {
         if (itemPatchDto.getAvailable() != null) {
             item.setAvailable(itemPatchDto.getAvailable());
         }
+    }
+
+    public ItemWithBookingDatesDto addBookingAndComments(Item item, List<Booking> booking, List<Comment> comment, int userId) {
+        ItemDto itemDto = itemMapper.mapItemToItemDto(item);
+        Optional<Booking> lastBookingDate;
+        Optional<Booking> nextBookingDate;
+        if (item.getOwner().getId() != userId) {
+            lastBookingDate = Optional.empty();
+            nextBookingDate = Optional.empty();
+        } else {
+            lastBookingDate = booking.stream()
+                    .filter(booking1 -> booking1.getItem().getId() == item.getId())
+                    .filter(booking1 -> booking1.getStatus().equals(BookingStatusEnum.APPROVED))
+                    .filter(booking1 -> booking1.getEnd().isBefore(LocalDateTime.now()))
+                    .max(Comparator.comparing(Booking::getEnd));
+            nextBookingDate = booking.stream()
+                    .filter(booking1 -> booking1.getItem().getId() == item.getId())
+                    .filter(booking1 -> booking1.getStart().isAfter(LocalDateTime.now()))
+                    .min(Comparator.comparing(Booking::getStart));
+        }
+        List<CommentDto> itemComments = comment.stream()
+                .filter(comment1 -> comment1.getItem().getId() == (item.getId()))
+                .map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
+        BookingOwnerDTO lastBookingDateMapped = bookingMapper.mapBookingToBookingOwnerDTO(lastBookingDate.orElse(null));
+        BookingOwnerDTO nextBookingDateMapped = bookingMapper.mapBookingToBookingOwnerDTO(nextBookingDate.orElse(null));
+        return itemMapper
+                .mapItemToItemWithBookingDatesDTO(itemDto, lastBookingDateMapped, nextBookingDateMapped, itemComments);
     }
 }
