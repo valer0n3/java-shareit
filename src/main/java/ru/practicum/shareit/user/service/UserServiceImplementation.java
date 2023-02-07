@@ -31,14 +31,8 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserPatchDto updateUser(UserPatchDto userPatchDto, int id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Id %d is not existed", id)));
-        if (userPatchDto.getName() != null) {
-            user.setName(userPatchDto.getName());
-        }
-        if (userPatchDto.getEmail() != null) {
-            user.setEmail(userPatchDto.getEmail());
-        }
+        User user = findUser(id);
+        setNameAndEmail(userPatchDto, user);
         return userMapper.mapUserToUserPatchDTO(userRepository.save(user));
     }
 
@@ -52,5 +46,19 @@ public class UserServiceImplementation implements UserService {
     public UserPostDto getUserById(int id) {
         return userMapper.mapUserToUserPostDTO(userRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Id %d is not existed", id))));
+    }
+
+    private User findUser(int userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Id %d is not existed", userId)));
+    }
+
+    private void setNameAndEmail(UserPatchDto userPatchDto, User user) {
+        if (userPatchDto.getName() != null) {
+            user.setName(userPatchDto.getName());
+        }
+        if (userPatchDto.getEmail() != null) {
+            user.setEmail(userPatchDto.getEmail());
+        }
     }
 }

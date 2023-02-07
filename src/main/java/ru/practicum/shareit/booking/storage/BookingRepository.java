@@ -52,14 +52,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "AND (i.status = ?2) ORDER BY i.start DESC")
     List<Booking> getBookingsOfItemsOwner(int ownerId, BookingStatusEnum bookingStatus);
 
-    @Query(value = "SELECT * FROM bookings  WHERE item_id = ?1 " +
-            "AND (end_date < CURRENT_TIMESTAMP) ORDER BY end_date DESC LIMIT 1", nativeQuery = true)
-    Booking searchLatestBooking(int itemId);
-
-    @Query(value = "SELECT * FROM bookings  WHERE item_id = ?1 " +
-            "AND (start_date > CURRENT_TIMESTAMP) ORDER BY start_date ASC LIMIT 1", nativeQuery = true)
-    Booking searchNearestBooking(int itemId);
-
     @Query(value = "SELECT * FROM bookings WHERE booker_id = ?1 AND item_id = ?2 " +
             "AND start_date < CURRENT_TIMESTAMP " +
             "AND (status = 'APPROVED')", nativeQuery = true)

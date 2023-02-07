@@ -109,30 +109,10 @@ public class ItemServiceImplementation implements ItemService {
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Item Id %d is not existed", itemId)));
     }
 
-    private BookingOwnerDTO getLastBooking(int itemId) {
-        return bookingMapper
-                .mapBookingToBookingOwnerDTO(bookingRepository.searchLatestBooking(itemId));
-    }
-
-    private BookingOwnerDTO getNextBooking(int itemId) {
-        return bookingMapper.mapBookingToBookingOwnerDTO(bookingRepository.searchNearestBooking(itemId));
-    }
-
     private void checkIfItemOwnerEqualsUserId(Item item, int userId) {
         if (item.getOwner().getId() != userId) {
             throw new ObjectNotFoundException("Item does not belong to User and can not be updated!");
         }
-    }
-
-    private List<CommentDto> getListOfComments(Item item) {
-        return commentRepository.getCommentsOfItem(item.getId())
-                .stream()
-                .map(commentMapper::mapCommentToCommentDto)
-                .collect(Collectors.toList());
-    }
-
-    private boolean checkIfItemOwnerEqualsUserId2(Item item, int userId) {
-        return item.getOwner().getId() == userId;
     }
 
     private void InsertInputDataToItem(Item item, ItemPatchDto itemPatchDto) {
