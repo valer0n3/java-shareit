@@ -29,4 +29,11 @@ public class ErrorHandler {
         log.warn("Error 409: {}", duplicatedDataException.getMessage());
         return new Exception("DuplicatedDataException ", duplicatedDataException.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Exception unsupportedStatus(final UnsupportedStatus incorrectInputException) {
+        log.warn("Error 400: {}", incorrectInputException.getMessage());
+        return Exception.builder().error(incorrectInputException.getMessage()).build();
+    }
 }

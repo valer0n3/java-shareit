@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public class UserStorageInMemoryImpl implements UserStorage {
-    private Map<Integer, User> userHashMap = new HashMap<>();
+    private final Map<Integer, User> userHashMap = new HashMap<>();
     private static int id;
 
     public final Map<Integer, User> getUserHashMap() {
@@ -40,7 +40,6 @@ public class UserStorageInMemoryImpl implements UserStorage {
         if (user.getEmail() != null) {
             userHashMap.get(id).setEmail(user.getEmail());
         }
-        System.out.println(userHashMap.get(id));
         return userHashMap.get(id);
     }
 

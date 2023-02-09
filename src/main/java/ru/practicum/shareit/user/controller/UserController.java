@@ -28,8 +28,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public UserPostDto deleteUser(@PathVariable int id) {
-        return userService.deleteUser(id);
+    public void deleteUser(@PathVariable int id) {
+        userService.deleteUser(id);
     }
 
     @PatchMapping("/{id}")

@@ -2,13 +2,12 @@ package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.DuplicatedDataException;
-import ru.practicum.shareit.exception.IncorrectInputException;
+import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.dto.UserPostDto;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,50 +15,50 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class UserServiceImplementation implements UserService {
-    private final UserStorage userStorage;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     @Override
     public UserPostDto createUser(UserPostDto userPostDto) {
-        checkIfEmailExists(userPostDto.getEmail());
         User user = userMapper.mapUserPostDtoToUser(userPostDto);
-        return userMapper.mapUserToUserPostDTO(userStorage.createUser(user));
+        return userMapper.mapUserToUserPostDTO(userRepository.save(user));
     }
 
     @Override
-    public UserPostDto deleteUser(int id) {
-        return userMapper.mapUserToUserPostDTO(userStorage.deleteUser(id));
+    public void deleteUser(int id) {
+        userRepository.deleteById(id);
     }
 
     @Override
     public UserPatchDto updateUser(UserPatchDto userPatchDto, int id) {
-        checkIfIdExists(id);
-        checkIfEmailExists(userPatchDto.getEmail());
-        User user = userMapper.mapUserPatchDtoToUser(userPatchDto);
-        return userMapper.mapUserToUserPatchDTO(userStorage.updateUser(user, id));
+        User user = findUser(id);
+        setNameAndEmail(userPatchDto, user);
+        return userMapper.mapUserToUserPatchDTO(userRepository.save(user));
     }
 
     @Override
     public List<UserPostDto> getAllUsers() {
-        return userStorage.getAllUsers().stream()
+        return userRepository.findAll().stream()
                 .map(userMapper::mapUserToUserPostDTO).collect(Collectors.toList());
     }
 
     @Override
     public UserPostDto getUserById(int id) {
-        checkIfIdExists(id);
-        return userMapper.mapUserToUserPostDTO(userStorage.getUserById(id));
+        return userMapper.mapUserToUserPostDTO(userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Id %d is not existed", id))));
     }
 
-    public void checkIfIdExists(int id) {
-        if (!userStorage.checkIfIdAlreadyExists(id)) {
-            throw new IncorrectInputException(String.format("Id %d is not existed", id));
+    private User findUser(int userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Id %d is not existed", userId)));
+    }
+
+    private void setNameAndEmail(UserPatchDto userPatchDto, User user) {
+        if (userPatchDto.getName() != null) {
+            user.setName(userPatchDto.getName());
         }
-    }
-
-    public void checkIfEmailExists(String email) {
-        if (userStorage.checkIfEmailAlreadyExists(email)) {
-            throw new DuplicatedDataException(String.format("Email %s is already existed!", email));
+        if (userPatchDto.getEmail() != null) {
+            user.setEmail(userPatchDto.getEmail());
         }
     }
 }
