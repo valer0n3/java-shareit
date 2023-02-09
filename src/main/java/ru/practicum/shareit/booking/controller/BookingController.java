@@ -14,7 +14,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exception.UnsupportedStatus;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -48,20 +47,12 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getAllBookingsOfCurrentUser(@RequestHeader(X_SHARER_USER_ID) int userId,
                                                         @RequestParam(defaultValue = "all") String state) {
-        return bookingService.getAllBookingsOfCurrentUser(userId, checkIfStatusIsIncorrect(state));
+        return bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state));
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingsOfAllUserItems(@RequestHeader(X_SHARER_USER_ID) int userId,
                                                          @RequestParam(defaultValue = "all") String state) {
-        return bookingService.getAllBookingsOfAllUserItems(userId, checkIfStatusIsIncorrect(state));
-    }
-
-    private BookingStatusEnum checkIfStatusIsIncorrect(String state) {
-        try {
-            return BookingStatusEnum.valueOf(state.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new UnsupportedStatus(String.format("Unknown state: %s", state));
-        }
+        return bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state));
     }
 }
