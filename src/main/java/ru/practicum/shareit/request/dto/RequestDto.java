@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class ItemRequestDto {
+public class RequestDto {
     private int id;
     private String description;
     private User requestor;
