@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.request.dto.NewRequestDto;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.service.RequestServiceImplementation;
 
@@ -23,9 +24,9 @@ public class RequestController {
     private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
-    public RequestDto addNewRequest(@Valid @RequestBody RequestDto requestDto,
+    public RequestDto addNewRequest(@Valid @RequestBody NewRequestDto newRequestDto,
                                     @RequestHeader(X_SHARER_USER_ID) int userId) {
-        return requestServiceImplementation.addNewRequest(requestDto, userId);
+        return requestServiceImplementation.addNewRequest(newRequestDto, userId);
     }
 
     @GetMapping
