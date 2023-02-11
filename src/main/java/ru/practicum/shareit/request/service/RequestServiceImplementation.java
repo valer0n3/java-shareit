@@ -1,6 +1,10 @@
 package ru.practicum.shareit.request.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.ItemForRequestDto;
@@ -50,6 +54,10 @@ public class RequestServiceImplementation implements RequestService {
 
     @Override
     public List<RequestDto> getOtherUsersRequests(int userId, int from, int size) {
+        Pageable pageWithElements = PageRequest.of(from, size, Sort.by("created").descending());
+        Page<Request> requests = requestRepository.findByRequestorIdIsNot(userId, pageWithElements);
+       // Page<RequestDto> requestDtos = requestMapper.mapRequestToRequestDto(requests);
+        System.out.println(requests);
         return null;
     }
 
