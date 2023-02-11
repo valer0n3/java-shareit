@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import ru.practicum.shareit.booking.dto.BookingOwnerDTO;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemForRequestDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDatesDto;
 import ru.practicum.shareit.item.model.Item;
@@ -25,5 +26,7 @@ public interface ItemMapper {
     @Mapping(target = "available", source = "itemDto.available")
     ItemWithBookingDatesDto mapItemToItemWithBookingDatesDTO(
             ItemDto itemDto, BookingOwnerDTO lastBooking, BookingOwnerDTO nextBooking, List<CommentDto> comments);
+
+    ItemForRequestDto mapItemToItemForRequestDto(Item item);
 }
 

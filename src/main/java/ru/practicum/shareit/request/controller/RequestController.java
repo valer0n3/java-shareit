@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.request.dto.NewRequestDto;
 import ru.practicum.shareit.request.dto.RequestDto;
+import ru.practicum.shareit.request.dto.RequestGetAllDto;
 import ru.practicum.shareit.request.service.RequestServiceImplementation;
 
 import javax.validation.Valid;
@@ -30,7 +31,7 @@ public class RequestController {
     }
 
     @GetMapping
-    public List<RequestDto> getOwnRequests(@RequestHeader(X_SHARER_USER_ID) int userId) {
+    public List<RequestGetAllDto> getOwnRequests(@RequestHeader(X_SHARER_USER_ID) int userId) {
         return requestServiceImplementation.getOwnRequests(userId);
     }
 
