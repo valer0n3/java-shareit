@@ -7,11 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemForRequestDto;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.NewRequestDto;
+import ru.practicum.shareit.request.dto.RequestAllOtherDTO;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.RequestGetAllDto;
 import ru.practicum.shareit.request.dto.mapper.RequestMapper;
@@ -49,16 +51,17 @@ public class RequestServiceImplementation implements RequestService {
         List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
                 .map(Request::getId).collect(Collectors.toList()));
         return requests.stream()
-                .map(request -> mapToRequestGetAllDto(request, items)).collect(Collectors.toList());
+                .map(request -> mapToRequestGetAllDto(request, items)).collect(Collectors.toList());//rename
     }
 
     @Override
-    public List<RequestDto> getOtherUsersRequests(int userId, int from, int size) {
+    public List<RequestAllOtherDTO> getOtherUsersRequests(int userId, int from, int size) {
         Pageable pageWithElements = PageRequest.of(from, size, Sort.by("created").descending());
         Page<Request> requests = requestRepository.findByRequestorIdIsNot(userId, pageWithElements);
-       // Page<RequestDto> requestDtos = requestMapper.mapRequestToRequestDto(requests);
-        System.out.println(requests);
-        return null;
+        List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
+                .map(Request::getId).collect(Collectors.toList()));
+        return requests.stream()
+                .map((request -> addItemsToRequests(request, items))).collect(Collectors.toList());
     }
 
     @Override
@@ -77,5 +80,13 @@ public class RequestServiceImplementation implements RequestService {
                 .map(itemMapper::mapItemToItemForRequestDto)
                 .collect(Collectors.toList());
         return requestMapper.mapRequestToRequestGetAllDto(request, itemsForRequestDto);
+    }
+
+    private RequestAllOtherDTO addItemsToRequests(Request request, List<Item> items) {
+        List<ItemDto> itemsForRequestAllOtherDTO = items.stream()
+                .filter(item -> item.getRequest().getId() == request.getId())
+                .map(itemMapper::mapItemToItemDto)
+                .collect(Collectors.toList());
+        return requestMapper.mapRequestToRequestAllOtherDto(request, itemsForRequestAllOtherDTO);
     }
 }

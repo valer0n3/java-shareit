@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.request.dto.NewRequestDto;
+import ru.practicum.shareit.request.dto.RequestAllOtherDTO;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.RequestGetAllDto;
 import ru.practicum.shareit.request.service.RequestServiceImplementation;
@@ -36,9 +38,9 @@ public class RequestController {
     }
 
     @GetMapping("/all")
-    public List<RequestDto> getOtherUsersRequests(@RequestHeader(X_SHARER_USER_ID) int userId,
-                                                  @RequestParam int from,
-                                                  @RequestParam int size) {
+    public List<RequestAllOtherDTO> getOtherUsersRequests(@RequestHeader(X_SHARER_USER_ID) int userId,
+                                                          @RequestParam int from,
+                                                          @RequestParam int size) {
         return requestServiceImplementation.getOtherUsersRequests(userId, from, size);
     }
 
