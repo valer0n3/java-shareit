@@ -55,17 +55,18 @@ public class RequestServiceImplementation implements RequestService {
     }
 
     @Override
-    public List<RequestAllOtherDTO> getOtherUsersRequests(int userId, int from, int size) {
+    public List<RequestGetAllDto> getOtherUsersRequests(int userId, int from, int size) {
         Pageable pageWithElements = PageRequest.of(from, size, Sort.by("created").descending());
         Page<Request> requests = requestRepository.findByRequestorIdIsNot(userId, pageWithElements);
         List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
                 .map(Request::getId).collect(Collectors.toList()));
         return requests.stream()
-                .map((request -> addItemsToRequests(request, items))).collect(Collectors.toList());
+                .map((request -> mapToRequestGetAllDto(request, items))).collect(Collectors.toList());
     }
 
     @Override
     public RequestGetAllDto getRequestWithAnswers(int userId, int requestId) {
+        checkIfUserExists(userId);
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new ObjectNotFoundException
                         (String.format("Request with id: %d is not existed", requestId)));

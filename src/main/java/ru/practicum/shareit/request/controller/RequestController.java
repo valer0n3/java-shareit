@@ -38,7 +38,7 @@ public class RequestController {
     }
 
     @GetMapping("/all")
-    public List<RequestAllOtherDTO> getOtherUsersRequests(@RequestHeader(X_SHARER_USER_ID) int userId,
+    public List<RequestGetAllDto> getOtherUsersRequests(@RequestHeader(X_SHARER_USER_ID) int userId,
                                                           @RequestParam(defaultValue = "10") int from,
                                                           @RequestParam(defaultValue = "10") int size) {
         return requestServiceImplementation.getOtherUsersRequests(userId, from, size);

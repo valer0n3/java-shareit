@@ -13,7 +13,7 @@ public interface RequestService {
 
     List<RequestGetAllDto> getOwnRequests(int userId);
 
-    List<RequestAllOtherDTO> getOtherUsersRequests(int userId, int from, int size);
+    List<RequestGetAllDto> getOtherUsersRequests(int userId, int from, int size);
 
     RequestGetAllDto getRequestWithAnswers(int userId, int requestId);
 }
