@@ -19,6 +19,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.storage.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -39,12 +41,17 @@ public class ItemServiceImplementation implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final RequestRepository requestRepository;
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
         User user = getUserById(userId);
+        Request request = checkIfRequestIdExists(itemDto);
+        //
         Item item = itemMapper.mapItemDtoToItem(itemDto);
         item.setOwner(user);
+        item.setRequest(request);
+        System.out.println("***********:" + item.getRequest());
         return itemMapper.mapItemToItemDto(itemRepository.save(item));
     }
 
@@ -152,5 +159,13 @@ public class ItemServiceImplementation implements ItemService {
         BookingOwnerDTO nextBookingDateMapped = bookingMapper.mapBookingToBookingOwnerDTO(nextBookingDate.orElse(null));
         return itemMapper
                 .mapItemToItemWithBookingDatesDTO(itemDto, lastBookingDateMapped, nextBookingDateMapped, itemComments);
+    }
+
+    private Request checkIfRequestIdExists(ItemDto itemDto) {
+        if (itemDto.getRequestId() != 0) {
+            return requestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new IncorrectInputException(String.format("Request with ID: %d", itemDto.getRequestId())));
+        }
+        return null;
     }
 }

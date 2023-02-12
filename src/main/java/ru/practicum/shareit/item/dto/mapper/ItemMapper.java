@@ -14,6 +14,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
+    @Mapping(target = "requestId", source = "item.request.id")
     ItemDto mapItemToItemDto(Item item);
 
     Item mapItemDtoToItem(ItemDto itemDto);

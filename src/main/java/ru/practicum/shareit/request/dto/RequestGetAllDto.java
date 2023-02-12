@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Builder
 public class RequestGetAllDto {
+    private int id;
     private String description;
     private LocalDateTime created;
     private List<ItemForRequestDto> items;

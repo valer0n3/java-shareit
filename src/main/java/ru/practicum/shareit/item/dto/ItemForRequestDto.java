@@ -8,5 +8,8 @@ import lombok.Data;
 public class ItemForRequestDto {
     private int id;
     private String name;
-    private int ownerId;
+    private String description;
+    private Boolean available;
+    private int requestId;
+
 }
