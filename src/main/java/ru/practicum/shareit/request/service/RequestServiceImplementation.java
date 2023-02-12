@@ -58,6 +58,7 @@ public class RequestServiceImplementation implements RequestService {
     public List<RequestGetAllDto> getOtherUsersRequests(int userId, int from, int size) {
         Pageable pageWithElements = PageRequest.of(from, size, Sort.by("created").descending());
         Page<Request> requests = requestRepository.findByRequestorIdIsNot(userId, pageWithElements);
+        // System.out.println("********: " + requests);
         List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
                 .map(Request::getId).collect(Collectors.toList()));
         return requests.stream()
@@ -85,6 +86,7 @@ public class RequestServiceImplementation implements RequestService {
                 .filter(item -> item.getRequest().getId() == request.getId())
                 .map(itemMapper::mapItemToItemForRequestDto)
                 .collect(Collectors.toList());
+
         return requestMapper.mapRequestToRequestGetAllDto(request, itemsForRequestDto);
     }
 
@@ -95,4 +97,6 @@ public class RequestServiceImplementation implements RequestService {
                 .collect(Collectors.toList());
         return requestMapper.mapRequestToRequestAllOtherDto(request, itemsForRequestAllOtherDTO);
     }
+
+
 }
