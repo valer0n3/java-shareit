@@ -45,7 +45,7 @@ public class RequestController {
     }
 
     @GetMapping("/{requestId}")
-    public RequestDto getRequestWithAnswers(@RequestHeader(X_SHARER_USER_ID) int userId,
+    public RequestGetAllDto getRequestWithAnswers(@RequestHeader(X_SHARER_USER_ID) int userId,
                                             @PathVariable int requestId) {
         return requestServiceImplementation.getRequestWithAnswers(userId, requestId);
     }

@@ -15,5 +15,5 @@ public interface RequestService {
 
     List<RequestAllOtherDTO> getOtherUsersRequests(int userId, int from, int size);
 
-    RequestDto getRequestWithAnswers(int userId, int requestId);
+    RequestGetAllDto getRequestWithAnswers(int userId, int requestId);
 }

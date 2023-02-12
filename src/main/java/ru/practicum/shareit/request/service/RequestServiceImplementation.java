@@ -65,8 +65,13 @@ public class RequestServiceImplementation implements RequestService {
     }
 
     @Override
-    public RequestDto getRequestWithAnswers(int userId, int requestId) {
-        return null;
+    public RequestGetAllDto getRequestWithAnswers(int userId, int requestId) {
+        Request request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new ObjectNotFoundException
+                        (String.format("Request with id: %d is not existed", requestId)));
+        List<ItemForRequestDto> items = itemRepository.findAllByRequestId(requestId).stream()
+                .map(itemMapper::mapItemToItemForRequestDto).collect(Collectors.toList());
+        return requestMapper.mapRequestToRequestGetAllDto(request, items);
     }
 
     private User checkIfUserExists(int userId) {
