@@ -28,6 +28,7 @@ public interface ItemMapper {
     ItemWithBookingDatesDto mapItemToItemWithBookingDatesDTO(
             ItemDto itemDto, BookingOwnerDTO lastBooking, BookingOwnerDTO nextBooking, List<CommentDto> comments);
 
+    @Mapping(target = "requestId", source = "item.request.id")
     ItemForRequestDto mapItemToItemForRequestDto(Item item);
 }
 

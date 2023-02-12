@@ -11,5 +11,4 @@ public class ItemForRequestDto {
     private String description;
     private Boolean available;
     private int requestId;
-
 }

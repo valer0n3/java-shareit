@@ -27,6 +27,7 @@ public interface RequestMapper {
     @Mapping(target = "itemDtoList", source = "items")
     RequestAllOtherDTO mapRequestToRequestAllOtherDto(Request request, List<ItemDto> items);
 
+    @Mapping(target = "id", source = "request.id")
     @Mapping(target = "description", source = "request.description")
     @Mapping(target = "created", source = "request.created")
     @Mapping(target = "items", source = "items")
