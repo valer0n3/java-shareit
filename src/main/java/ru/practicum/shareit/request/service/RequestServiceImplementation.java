@@ -7,13 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemForRequestDto;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.NewRequestDto;
-import ru.practicum.shareit.request.dto.RequestAllOtherDTO;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.RequestGetAllDto;
 import ru.practicum.shareit.request.dto.mapper.RequestMapper;
@@ -51,14 +49,13 @@ public class RequestServiceImplementation implements RequestService {
         List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
                 .map(Request::getId).collect(Collectors.toList()));
         return requests.stream()
-                .map(request -> mapToRequestGetAllDto(request, items)).collect(Collectors.toList());//rename
+                .map(request -> mapToRequestGetAllDto(request, items)).collect(Collectors.toList());
     }
 
     @Override
     public List<RequestGetAllDto> getOtherUsersRequests(int userId, int from, int size) {
-        Pageable pageWithElements = PageRequest.of(from, size, Sort.by("created").descending());
+        Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("created").descending());
         Page<Request> requests = requestRepository.findByRequestorIdIsNot(userId, pageWithElements);
-        // System.out.println("********: " + requests);
         List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
                 .map(Request::getId).collect(Collectors.toList()));
         return requests.stream()
@@ -69,8 +66,8 @@ public class RequestServiceImplementation implements RequestService {
     public RequestGetAllDto getRequestWithAnswers(int userId, int requestId) {
         checkIfUserExists(userId);
         Request request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new ObjectNotFoundException
-                        (String.format("Request with id: %d is not existed", requestId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String
+                        .format("Request with id: %d is not existed", requestId)));
         List<ItemForRequestDto> items = itemRepository.findAllByRequestId(requestId).stream()
                 .map(itemMapper::mapItemToItemForRequestDto).collect(Collectors.toList());
         return requestMapper.mapRequestToRequestGetAllDto(request, items);
@@ -86,17 +83,6 @@ public class RequestServiceImplementation implements RequestService {
                 .filter(item -> item.getRequest().getId() == request.getId())
                 .map(itemMapper::mapItemToItemForRequestDto)
                 .collect(Collectors.toList());
-
         return requestMapper.mapRequestToRequestGetAllDto(request, itemsForRequestDto);
     }
-
-    private RequestAllOtherDTO addItemsToRequests(Request request, List<Item> items) {
-        List<ItemDto> itemsForRequestAllOtherDTO = items.stream()
-                .filter(item -> item.getRequest().getId() == request.getId())
-                .map(itemMapper::mapItemToItemDto)
-                .collect(Collectors.toList());
-        return requestMapper.mapRequestToRequestAllOtherDto(request, itemsForRequestAllOtherDTO);
-    }
-
-
 }

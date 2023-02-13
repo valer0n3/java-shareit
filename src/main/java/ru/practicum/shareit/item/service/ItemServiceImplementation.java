@@ -47,11 +47,9 @@ public class ItemServiceImplementation implements ItemService {
     public ItemDto addNewItem(ItemDto itemDto, int userId) {
         User user = getUserById(userId);
         Request request = checkIfRequestIdExists(itemDto);
-        //
         Item item = itemMapper.mapItemDtoToItem(itemDto);
         item.setOwner(user);
         item.setRequest(request);
-        System.out.println("***********:" + item.getRequest());
         return itemMapper.mapItemToItemDto(itemRepository.save(item));
     }
 

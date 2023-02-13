@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking.storage;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.enums.BookingStatusEnum;
@@ -9,9 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
-    @Query(value = "SELECT * FROM bookings  WHERE booker_id = ?1 " +
-            "ORDER BY start_date DESC", nativeQuery = true)
-    List<Booking> getAllBookingsOfCurrentUser(int userID);
+    Page<Booking> findByBookerId(int userID, Pageable pageable);
 
     @Query(value = "SELECT * FROM bookings WHERE booker_id = ?1 " +
             "AND (start_date < CURRENT_TIMESTAMP) AND (end_date > CURRENT_TIMESTAMP) " +
@@ -32,8 +32,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "AND (status = ?2) ORDER BY start_date DESC", nativeQuery = true)
     List<Booking> getBookingsOfCurrentUser(int userID, String bookingStatus);
 
-    @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 ORDER BY i.start DESC")
-    List<Booking> getAllBookingsOfItemsOwner(int ownerId);
+    Page<Booking> findByItemOwnerId(int ownerId, Pageable pageable);
 
     @Query("SELECT i FROM Booking i WHERE i.item.owner.id = ?1 " +
             "AND (i.start < CURRENT_TIMESTAMP) " +
