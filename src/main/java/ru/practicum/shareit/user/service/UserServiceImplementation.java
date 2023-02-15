@@ -44,7 +44,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserPostDto getUserById(int id) {
-        return UserMapper.test.mapUserToUserPostDTO(userRepository.findById(id)
+        return userMapper.mapUserToUserPostDTO(userRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Id %d is not existed", id))));
     }
 

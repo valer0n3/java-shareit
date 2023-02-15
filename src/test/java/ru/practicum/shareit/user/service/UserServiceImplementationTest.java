@@ -1,34 +1,85 @@
 package ru.practicum.shareit.user.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.user.controller.UserController;
+import ru.practicum.shareit.exception.ObjectNotFoundException;
+import ru.practicum.shareit.user.dto.UserPostDto;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-@ExtendWith(MockitoExtension.class)
-class UserServiceImplementationTest {
-    @Mock
-    private  UserMapper userMapper;
-    @Mock
-    private  UserRepository userRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 
+@ExtendWith(MockitoExtension.class)
+//@RequiredArgsConstructor(onConstructor_ = @Autowired)
+class UserServiceImplementationTest {
+    private User testUser1;
+    private User testUser2;
+    private UserPostDto userPostDto;
+    @Mock
+    private UserMapper userMapper;
+    @Mock
+    private UserRepository userRepository;
     @InjectMocks
     private UserServiceImplementation userService;
 
-    @Test
-    void getUserById() {
-
-        Mockito.when(userRepository.findById(10)).thenReturn(Optional.of(new User()));
-        System.out.println(userService.getUserById(10));
-
+    @BeforeEach
+    public void beforeEachCreateUsers() {
+        testUser1 = User.builder()
+                .id(1)
+                .name("testUser1")
+                .email("testUser1@email.ru")
+                .build();
+        testUser2 = User.builder()
+                .id(1)
+                .name("testUser2")
+                .email("testUser2@email.ru")
+                .build();
+        userPostDto = UserPostDto.builder()
+                .id(1)
+                .name("testUser1")
+                .email("testUser1@email.ru")
+                .build();
     }
+
+    @Test
+    void getUserById_whenUserFound_thenReturnUserPostDto() {
+        int userId = 0;
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(testUser1));
+         Mockito.when(userMapper.mapUserToUserPostDTO(any())).thenReturn(userPostDto);
+        UserPostDto actualUserPostDto = userService.getUserById(userId);
+        System.out.println(actualUserPostDto);
+        assertEquals(testUser1.getId(), actualUserPostDto.getId());
+    }
+
+    @Test
+    void getUserById_whenUserNotFound_thenThrowObjectNotFoundException() {
+        int userId = 0;
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        ObjectNotFoundException objectNotFoundException = assertThrows(ObjectNotFoundException.class, () -> userService.getUserById(userId));
+        System.out.println(objectNotFoundException);
+        assertEquals(String.format("Id %d is not existed", userId), objectNotFoundException.getMessage());
+    }
+
+    @Test
+    void createUser_whenUserCreate_thenReturnUserPostDto() {
+        int userId = 0;
+        Mockito.when(userMapper.mapUserPostDtoToUser(any())).thenReturn(testUser1);
+        Mockito.when(userRepository.save(testUser1)).thenReturn(testUser1);
+        Mockito.when(userMapper.mapUserToUserPostDTO(any())).thenReturn(userPostDto);
+
+        UserPostDto actualUserPostDto = userService.createUser(userPostDto);
+        System.out.println(actualUserPostDto);
+        assertEquals(testUser1.getId(), actualUserPostDto.getId());
+    }
+
 }
