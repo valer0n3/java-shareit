@@ -14,11 +14,16 @@ import ru.practicum.shareit.user.dto.UserPostDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImplementation;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,6 +42,7 @@ class UserControllerTest {
     private User testUser1;
     private User testUser2;
     private UserPostDto userPostDto;
+    private UserPostDto userPostDto2;
     private UserPatchDto testUserPatchDto;
     private UserPatchDto testNewUserPatchDto;
 
@@ -57,6 +63,11 @@ class UserControllerTest {
                 .name("testUser1")
                 .email("testUser1@email.ru")
                 .build();
+        userPostDto2 = UserPostDto.builder()
+                .id(2)
+                .name("testUser2")
+                .email("testUser2@email.ru")
+                .build();
         testUserPatchDto = UserPatchDto.builder()
                 .id(1)
                 .name("testUser1")
@@ -71,7 +82,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createUser() {
+    void createUser_whenSuccessfullyCreated_thenReturnOk() {
         when(userService.createUser(any())).thenReturn(userPostDto);
         String result = mockMvc.perform(post("/users")
                         .contentType("application/json")
@@ -81,15 +92,34 @@ class UserControllerTest {
                 .getResponse()
                 .getContentAsString();
         assertEquals(objectMapper.writeValueAsString(userPostDto), result);
-    }
-
-    @Test
-    void deleteUser() {
+        verify(userService).createUser(userPostDto);
     }
 
     @SneakyThrows
     @Test
-    void updateUser_whenUserIsNotValid_thenReturnBadRequest() {
+    void createUser_whenUserIsNotValid_thenReturnBadRequest() {
+        userPostDto.setName(null);
+        mockMvc.perform(post("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userPostDto)))
+                .andExpect(status().isBadRequest());
+        verify(userService, never()).createUser(userPostDto);
+    }
+
+    @SneakyThrows
+    @Test
+    void deleteUser_whenUserIsValid_thenReturnOk() {
+        int userId = 0;
+        doNothing().when(userService).deleteUser(userId);
+        mockMvc.perform(delete("/users/{id}", userId)
+                        .contentType("application/json"))
+                .andExpect(status().isOk());
+        verify(userService).deleteUser(userId);
+    }
+
+    @SneakyThrows
+    @Test
+    void updateUser_whenUserIsValid_thenReturnOkRequest() {
         int userId = 1;
         when(userService.updateUser(any(), eq(1))).thenReturn(testNewUserPatchDto);
         String result = mockMvc.perform(patch("/users/{id}", userId)
@@ -103,8 +133,19 @@ class UserControllerTest {
         assertEquals(objectMapper.writeValueAsString(userPostDto), result);
     }
 
+    @SneakyThrows
     @Test
-    void getAllUsers() {
+    void getAllUsers_whenIsValid_thenReturnOk() {
+        List<UserPostDto> userPostDtoList = List.of(userPostDto, userPostDto2);
+        when(userService.getAllUsers()).thenReturn(userPostDtoList);
+        String result = mockMvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        System.out.println(result);
+        verify(userService).getAllUsers();
+        assertEquals(objectMapper.writeValueAsString(userPostDtoList), result);
     }
 
     @SneakyThrows
