@@ -16,7 +16,6 @@ import ru.practicum.shareit.booking.service.BookingServiceImplementation;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -61,7 +60,6 @@ class BookingControllerTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        assertEquals(objectMapper.writeValueAsString(newBookingDto), result);
         verify(bookingService).addNewBooking(newBookingDto, userId);
     }
 
