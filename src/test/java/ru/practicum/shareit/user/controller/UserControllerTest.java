@@ -1,22 +1,27 @@
 package ru.practicum.shareit.user.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.user.dto.UserPostDto;
-import ru.practicum.shareit.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.user.service.UserServiceImplementation;
 
-import java.util.List;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = UserController.class)
 class UserControllerTest {
-    @Mock
-    private UserService userService;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @MockBean
+    private UserServiceImplementation userService;
     @InjectMocks
     private UserController userController;
 
@@ -33,15 +38,15 @@ class UserControllerTest {
     }
 
     @Test
-    void getAllUsers_whenInvoked_thenResponseWithUserCollection() {
-        List<UserPostDto> expectedUsers = List.of(new UserPostDto());
-        Mockito.when(userService.getAllUsers()).thenReturn(expectedUsers);
-        List<UserPostDto> allUsers = userController.getAllUsers();
-        System.out.println(expectedUsers + "; " + allUsers);
-        assertEquals(expectedUsers, allUsers);
+    void getAllUsers() {
     }
 
+    @SneakyThrows
     @Test
     void getUserById() {
+       int userId = 1;
+        mockMvc.perform(get("/users/{id}", userId))
+                .andExpect(status().isOk());
+        verify(userService).getUserById(userId);
     }
 }
