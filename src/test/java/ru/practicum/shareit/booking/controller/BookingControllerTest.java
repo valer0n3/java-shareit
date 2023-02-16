@@ -8,12 +8,16 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingServiceImplementation;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.verify;
@@ -44,6 +48,7 @@ class BookingControllerTest {
                 .build();
         newBookingDto = NewBookingDto.builder()
                 .itemId(1)
+                .start(LocalDateTime.now().plusDays(1))
                 .build();
     }
 
@@ -61,6 +66,21 @@ class BookingControllerTest {
                 .getResponse()
                 .getContentAsString();
         verify(bookingService).addNewBooking(newBookingDto, userId);
+    }
+
+    @SneakyThrows
+    @Test
+    void save() {
+        int userId = 1;
+        when(bookingService.addNewBooking(newBookingDto, userId)).thenReturn(bookingDto);
+        ResultActions resultActions = mockMvc.perform(post("/bookings")
+                        .content(objectMapper.writeValueAsString(newBookingDto))
+                        .header(X_SHARER_USER_ID, 1L)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        System.out.println(resultActions);
     }
 
     @SneakyThrows

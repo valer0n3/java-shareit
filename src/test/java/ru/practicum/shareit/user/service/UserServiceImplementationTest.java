@@ -16,15 +16,18 @@ import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-//@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiceImplementationTest {
     private User testUser1;
     private User testUser2;
@@ -100,6 +103,15 @@ class UserServiceImplementationTest {
     }
 
     @Test
+    void updateUser_whenUserNotFound_thenThrowNotFoundException() {
+        int userId = 0;
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        ObjectNotFoundException objectNotFoundException = assertThrows(ObjectNotFoundException.class,
+                () -> userService.updateUser(testNewUserPatchDto, userId));
+        assertEquals(String.format("Id %d is not existed", userId), objectNotFoundException.getMessage());
+    }
+
+    @Test
     void updateUser_whenUserFound_thenUpdate() {
         int userId = 0;
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(testUser1));
@@ -107,5 +119,62 @@ class UserServiceImplementationTest {
         UserPatchDto userPatchDto = userService.updateUser(testNewUserPatchDto, userId);
         verify(userRepository).save(userArgumentCaptor.capture());
         assertEquals(userPatchDto.getEmail(), userArgumentCaptor.getValue().getEmail());
+    }
+
+    @Test
+    void updateUser_whenNameAndMailCorrect_thenUpdateNameAndEmail() {
+        User oldUser = testUser1;
+        int userId = 0;
+        testNewUserPatchDto.setName("changedName");
+        testNewUserPatchDto.setEmail("changed@email.com");
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(oldUser));
+        userService.updateUser(testNewUserPatchDto, userId);
+        verify(userRepository).save(userArgumentCaptor.capture());
+        assertEquals(testNewUserPatchDto.getName(), userArgumentCaptor.getValue().getName());
+        assertEquals(testNewUserPatchDto.getEmail(), userArgumentCaptor.getValue().getEmail());
+        verify(userRepository).save(any());
+    }
+
+    @Test
+    void updateUser_whenNameisNullAndMailCorrect_thenUpdateOnlyMail() {
+        User oldUser = testUser1;
+        int userId = 0;
+        testNewUserPatchDto.setName(null);
+        testNewUserPatchDto.setEmail("changed@email.com");
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(oldUser));
+        userService.updateUser(testNewUserPatchDto, userId);
+        verify(userRepository).save(userArgumentCaptor.capture());
+        assertEquals(oldUser.getName(), userArgumentCaptor.getValue().getName());
+        assertEquals(testNewUserPatchDto.getEmail(), userArgumentCaptor.getValue().getEmail());
+        verify(userRepository).save(any());
+    }
+
+    @Test
+    void updateUser_whenNameIsCorrectAndMailIsNull_thenUpdateOnlyName() {
+        User oldUser = testUser1;
+        int userId = 0;
+        testNewUserPatchDto.setName("changedName");
+        testNewUserPatchDto.setEmail(null);
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(oldUser));
+        userService.updateUser(testNewUserPatchDto, userId);
+        verify(userRepository).save(userArgumentCaptor.capture());
+        assertEquals(testNewUserPatchDto.getName(), userArgumentCaptor.getValue().getName());
+        assertEquals(oldUser.getEmail(), userArgumentCaptor.getValue().getEmail());
+        verify(userRepository).save(any());
+    }
+
+    @Test
+    void deleteUser_whenUserExists_thenDeleteSuccessfully() {
+        int userId = 0;
+        userService.deleteUser(userId);
+        verify(userRepository).deleteById(userId);
+    }
+
+    @Test
+    void getAllUsers_whenUsersExists_thenReturnUserPostDtoList() {
+        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+        List<UserPostDto> usersList = userService.getAllUsers();
+        verify(userRepository).findAll();
+        assertTrue(usersList.isEmpty());
     }
 }
