@@ -87,7 +87,6 @@ class UserServiceImplementationTest {
         int userId = 0;
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
         ObjectNotFoundException objectNotFoundException = assertThrows(ObjectNotFoundException.class, () -> userService.getUserById(userId));
-        System.out.println(objectNotFoundException);
         assertEquals(String.format("Id %d is not existed", userId), objectNotFoundException.getMessage());
     }
 
