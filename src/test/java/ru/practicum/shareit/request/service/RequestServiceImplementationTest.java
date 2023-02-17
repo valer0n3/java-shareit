@@ -158,7 +158,7 @@ class RequestServiceImplementationTest {
                 () -> requestService.getRequestWithAnswers(userId, requestId));
         assertEquals(String.format("User Id %d is not existed", userId), objectNotFoundException.getMessage());
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        ObjectNotFoundException objectNotFoundException2 = assertThrows(ObjectNotFoundException.class,
+        ObjectNotFoundException objectNotFoundExceptionRequest = assertThrows(ObjectNotFoundException.class,
                 () -> requestService.getRequestWithAnswers(userId, requestId));
     }
 
