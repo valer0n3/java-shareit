@@ -52,7 +52,7 @@ public class BookingServiceImplementation implements BookingService {
         checkIfUserIsNotItemOwner(userId, booking.getItem().getOwner().getId());
         checkIfBookingStatusIsWaiting(booking);
         booking.setStatus(approveBookingOrReject(isApproved));
-        return getBookingDto(bookingRepository.save(booking));
+        return getBookingDto(booking);
     }
 
     @Override
