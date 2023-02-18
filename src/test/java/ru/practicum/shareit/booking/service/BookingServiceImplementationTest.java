@@ -8,8 +8,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
@@ -26,11 +28,14 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,6 +61,7 @@ class BookingServiceImplementationTest {
     private Item item;
     private NewBookingDto newBookingDto;
     private Booking returnedBooking;
+    private Booking booking;
 
     @BeforeEach
     public void beforeEachCreateRequests() {
@@ -79,6 +85,14 @@ class BookingServiceImplementationTest {
         returnedBooking = Booking.builder()
                 .id(1)
                 .start(LocalDateTime.now().plusDays(2))
+                .end(LocalDateTime.now().plusDays(5))
+                .item(item)
+                .booker(user)
+                .status(BookingStatusEnum.WAITING)
+                .build();
+        booking = Booking.builder()
+                .id(1)
+                .start(LocalDateTime.now().plusDays(1))
                 .end(LocalDateTime.now().plusDays(5))
                 .item(item)
                 .booker(user)
@@ -238,7 +252,130 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfCurrentUser() {
+    void getAllBookingsOfCurrentUser_whenStatusIsAll_ReturnAll() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(bookingRepository.findByBookerId(any(Integer.class), Mockito.any())).thenReturn(new PageImpl<>(List.of(booking)));
+        bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.ALL, from, size);
+        verify(bookingRepository, times(1)).findByBookerId(any(Integer.class), Mockito.any());
+    }
+
+    @Test
+    void getAllBookingsOfCurrentUser_whenStatusIsCurrent_ReturnCurrent() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.CURRENT, from, size);
+        verify(bookingRepository, times(1)).getCurrentBookingsOfCurrentUser(userId);
+    }
+
+    @Test
+    void getAllBookingsOfCurrentUser_whenStatusIsPast_ReturnPast() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.PAST, from, size);
+        verify(bookingRepository, times(1)).getPastBookingsOfCurrentUser(userId);
+    }
+
+    @Test
+    void getAllBookingsOfCurrentUser_whenStatusIsFuture_ReturnFuture() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.FUTURE, from, size);
+        verify(bookingRepository, times(1)).getFutureBookingsOfCurrentUser(userId);
+    }
+
+    @Test
+    void getAllBookingsOfCurrentUser_whenStatusIsWaiting_ReturnWaiting() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.WAITING, from, size);
+        verify(bookingRepository, times(1))
+                .getBookingsOfCurrentUser(userId, BookingStatusEnum.WAITING.name());
+    }
+
+    @Test
+    void getAllBookingsOfCurrentUser_whenStatusIsRejected_ReturnRejected() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.REJECTED, from, size);
+        verify(bookingRepository, times(1))
+                .getBookingsOfCurrentUser(userId, BookingStatusEnum.REJECTED.name());
+    }
+
+    @Test
+    void getAllBookingsOfAllUserItems_whenStatusIsAll_ReturnAll() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(bookingRepository.findByItemOwnerId(any(Integer.class), Mockito.any()))
+                .thenReturn(new PageImpl<>(List.of(booking)));
+        bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.ALL, from, size);
+        verify(bookingRepository, times(1)).findByItemOwnerId(any(Integer.class), Mockito.any());
+    }
+
+    @Test
+    void getAllBookingsOfAllUserItems_whenStatusIsCurrent_ReturnCurrent() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.CURRENT, from, size);
+        verify(bookingRepository, times(1)).getCurrentBookingsOfItemsOwner(userId);
+    }
+
+    @Test
+    void getAllBookingsOfAllUserItems_whenStatusIsPast_ReturnPast() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.PAST, from, size);
+        verify(bookingRepository, times(1)).getPastBookingsOfItemsOwner(userId);
+    }
+
+    @Test
+    void getAllBookingsOfAllUserItems_whenStatusIsFuture_ReturnFuture() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.FUTURE, from, size);
+        verify(bookingRepository, times(1)).getFutureBookingsOfItemsOwner(userId);
+    }
+
+    @Test
+    void getAllBookingsOfAllUserItems_whenStatusIsWaiting_ReturnWaiting() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.WAITING, from, size);
+        verify(bookingRepository, times(1))
+                .getBookingsOfItemsOwner(userId, BookingStatusEnum.WAITING);
+    }
+
+    @Test
+    void getAllBookingsOfAllUserItems_whenStatusIsRejected_ReturnRejected() {
+        int userId = 1;
+        int from = 0;
+        int size = 10;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.REJECTED, from, size);
+        verify(bookingRepository, times(1))
+                .getBookingsOfItemsOwner(userId, BookingStatusEnum.REJECTED);
     }
 
     @Test

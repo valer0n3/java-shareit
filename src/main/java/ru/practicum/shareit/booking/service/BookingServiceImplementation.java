@@ -127,7 +127,7 @@ public class BookingServiceImplementation implements BookingService {
         }
     }
 
-    public void checkIfItemIsAvailable(Item item) {
+    private void checkIfItemIsAvailable(Item item) {
         if (!item.getAvailable()) {
             throw new IncorrectInputException("Item is unavailable");
         }
