@@ -154,8 +154,8 @@ class ItemControllerTest {
     @SneakyThrows
     @Test
     void addComment_whenInputIsCorrect_thenResponseOk() {
-       int itemId = 1;
-       int userId = 1;
+        int itemId = 1;
+        int userId = 1;
         when(itemService.addComment(commentDto, itemId, userId)).thenReturn(commentDto);
         String result = mockMvc.perform(post("/items/{itemId}/comment", itemId)
                         .contentType("application/json")
