@@ -62,7 +62,7 @@ class RequestServiceImplementationTest {
     private ItemForRequestDto itemForRequestDto;
 
     @BeforeEach
-    public void beforeEachCreateRequests() {
+    public void beforeEach() {
         requestDto = RequestDto.builder()
                 .id(1)
                 .description("testDescription")
@@ -97,7 +97,7 @@ class RequestServiceImplementationTest {
     }
 
     @Test
-    void addNewRequest_whenUserExists_thenSave() {
+    public void addNewRequest_whenUserExists_thenSave() {
         int userId = 0;
         request.setId(1);
         request.setDescription(newRequestDto.getDescription());
@@ -111,7 +111,7 @@ class RequestServiceImplementationTest {
     }
 
     @Test
-    void addNewRequest_whenUserIsNotExisted_thenThrowObjectNotFoundException() {
+    public void addNewRequest_whenUserIsNotExisted_thenThrowObjectNotFoundException() {
         int userId = 0;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
         ObjectNotFoundException objectNotFoundException = assertThrows(ObjectNotFoundException.class,
@@ -120,7 +120,7 @@ class RequestServiceImplementationTest {
     }
 
     @Test
-    void getOwnRequests_whenInputIsCorrect_thenGetList() {
+    public void getOwnRequests_whenInputIsCorrect_thenGetList() {
         int userId = 0;
         List<Request> lr = List.of(request, request2);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -135,7 +135,7 @@ class RequestServiceImplementationTest {
     }
 
     @Test
-    void getOtherUsersRequests_whenInputIsCorrect_thenGetList() {
+    public void getOtherUsersRequests_whenInputIsCorrect_thenGetList() {
         int userId = 0;
         int from = 1;
         int size = 10;
@@ -150,7 +150,7 @@ class RequestServiceImplementationTest {
     }
 
     @Test
-    void getRequestWithAnswers_whenUserIsNotExisted_thenTrowObjectNotFoundException() {
+    public void getRequestWithAnswers_whenUserIsNotExisted_thenTrowObjectNotFoundException() {
         int userId = 0;
         int requestId = 0;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
@@ -163,7 +163,7 @@ class RequestServiceImplementationTest {
     }
 
     @Test
-    void getRequestWithAnswers_whenRequestIsCorrect_thenReturnRequestGetAllDto() {
+    public void getRequestWithAnswers_whenRequestIsCorrect_thenReturnRequestGetAllDto() {
         int userId = 0;
         int requestId = 0;
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));

@@ -22,7 +22,7 @@ class ItemMapperImplTest {
     private ItemWithBookingDatesDto newItemWithBookingDatesDTO;
 
     @BeforeEach
-    public void beforeEachCreateRequests() {
+    private void beforeEach() {
         newItem = Item.builder()
                 .id(1)
                 .name("itemName")
@@ -47,33 +47,25 @@ class ItemMapperImplTest {
     }
 
     @Test
-    void mapItemToItemDto() {
+    public void mapItemToItemDto() {
         ItemDto itemDto = itemMapper.mapItemToItemDto(newItem);
         assertEquals(newItem.getName(), itemDto.getName());
         assertEquals(newItem.getDescription(), itemDto.getDescription());
     }
 
     @Test
-    void mapItemDtoToItem() {
+    public void mapItemDtoToItem() {
         Item item = itemMapper.mapItemDtoToItem(newItemDto);
         assertEquals(newItemDto.getName(), item.getName());
     }
 
     @Test
-    void mapItemToItemPatchDto() {
+    public void mapItemToItemPatchDto() {
         ItemPatchDto itemPatchDto = itemMapper.mapItemToItemPatchDto(newItem);
         assertEquals(itemPatchDto.getDescription(), itemPatchDto.getDescription());
     }
 
- /*   @Test
-    void mapItemToItemWithBookingDatesDTO() {
-        ItemWithBookingDatesDto itemWithBookingDatesDto = itemMapper.mapItemToItemWithBookingDatesDTO(newItem);
-
-
-
-    }*/
-
     @Test
-    void mapItemToItemForRequestDto() {
+    public void mapItemToItemForRequestDto() {
     }
 }

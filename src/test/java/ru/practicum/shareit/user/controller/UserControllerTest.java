@@ -47,7 +47,7 @@ class UserControllerTest {
     private UserPatchDto testNewUserPatchDto;
 
     @BeforeEach
-    public void beforeEachCreateUsers() {
+    public void beforeEach() {
         testUser1 = User.builder()
                 .id(1)
                 .name("testUser1")
@@ -82,7 +82,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createUser_whenSuccessfullyCreated_thenReturnOk() {
+    public void createUser_whenSuccessfullyCreated_thenReturnOk() {
         when(userService.createUser(any())).thenReturn(userPostDto);
         String result = mockMvc.perform(post("/users")
                         .contentType("application/json")
@@ -97,7 +97,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createUser_whenUserIsNotValid_thenReturnBadRequest() {
+    public void createUser_whenUserIsNotValid_thenReturnBadRequest() {
         userPostDto.setName(null);
         mockMvc.perform(post("/users")
                         .contentType("application/json")
@@ -108,7 +108,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteUser_whenUserIsValid_thenReturnOk() {
+    public void deleteUser_whenUserIsValid_thenReturnOk() {
         int userId = 0;
         doNothing().when(userService).deleteUser(userId);
         mockMvc.perform(delete("/users/{id}", userId)
@@ -119,7 +119,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void updateUser_whenUserIsValid_thenReturnOkRequest() {
+    public void updateUser_whenUserIsValid_thenReturnOkRequest() {
         int userId = 1;
         when(userService.updateUser(any(), eq(1))).thenReturn(testNewUserPatchDto);
         String result = mockMvc.perform(patch("/users/{id}", userId)
@@ -135,7 +135,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void getAllUsers_whenIsValid_thenReturnOk() {
+    public void getAllUsers_whenIsValid_thenReturnOk() {
         List<UserPostDto> userPostDtoList = List.of(userPostDto, userPostDto2);
         when(userService.getAllUsers()).thenReturn(userPostDtoList);
         String result = mockMvc.perform(get("/users"))
@@ -143,14 +143,13 @@ class UserControllerTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        System.out.println(result);
         verify(userService).getAllUsers();
         assertEquals(objectMapper.writeValueAsString(userPostDtoList), result);
     }
 
     @SneakyThrows
     @Test
-    void getUserById() {
+    public void getUserById() {
         int userId = 1;
         mockMvc.perform(get("/users/{id}", userId))
                 .andExpect(status().isOk());

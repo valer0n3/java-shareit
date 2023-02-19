@@ -18,7 +18,7 @@ class CommentMapperTest {
     private CommentDto newCommentDto;
 
     @BeforeEach
-    public void beforeEachCreateRequests() {
+    public void beforeEach() {
         newComment = Comment.builder()
                 .id(1)
                 .text("commentTest")
@@ -30,13 +30,13 @@ class CommentMapperTest {
     }
 
     @Test
-    void mapCommentDtoToComment() {
+    public void mapCommentDtoToComment() {
         Comment comment = commentMapper.mapCommentDtoToComment(newCommentDto);
         assertEquals(newCommentDto.getText(), comment.getText());
     }
 
     @Test
-    void mapCommentToCommentDto() {
+    public void mapCommentToCommentDto() {
         CommentDto commentDto = commentMapper.mapCommentToCommentDto(newComment);
         assertEquals(newComment.getText(), commentDto.getText());
     }

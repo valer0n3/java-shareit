@@ -36,7 +36,7 @@ class RequestControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    public void beforeEachCreateUsers() {
+    public void beforeEach() {
         requestDto = RequestDto.builder()
                 .id(1)
                 .build();
@@ -58,7 +58,7 @@ class RequestControllerTest {
 
     @SneakyThrows
     @Test
-    void addNewRequest_whenInputIsValid_thenReturnOk() {
+    public void addNewRequest_whenInputIsValid_thenReturnOk() {
         int userId = 1;
         when(requestService.addNewRequest(newRequestDto, userId)).thenReturn(requestDto);
         String result = mockMvc.perform(post("/requests")
@@ -75,7 +75,7 @@ class RequestControllerTest {
 
     @SneakyThrows
     @Test
-    void getOtherUsersRequests_whenCorrectInput_thenReturnOk() {
+    public void getOtherUsersRequests_whenCorrectInput_thenReturnOk() {
         int userId = 1;
         int index = 0;
         int size = 10;
@@ -93,7 +93,7 @@ class RequestControllerTest {
 
     @SneakyThrows
     @Test
-    void getOwnRequests() {
+    public void getOwnRequests() {
         int userId = 1;
         List<RequestGetAllDto> requestGetAllDtos = List.of(requestGetAllDto, requestGetAllDto2);
         when(requestService.getOwnRequests(userId)).thenReturn(requestGetAllDtos);
@@ -109,7 +109,7 @@ class RequestControllerTest {
 
     @SneakyThrows
     @Test
-    void getRequestWithAnswers() {
+    public void getRequestWithAnswers() {
         int userId = 1;
         int requestId = 1;
         when(requestService.getRequestWithAnswers(userId, requestId)).thenReturn(requestGetAllDto);

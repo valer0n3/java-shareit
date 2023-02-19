@@ -42,7 +42,7 @@ class BookingControllerTest {
     private BookingController bookingController;
 
     @BeforeEach
-    public void beforeEachCreateUsers() {
+    public void beforeEacs() {
         bookingDto = BookingDto.builder()
                 .id(1)
                 .build();
@@ -54,7 +54,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void addNewBooking_whenInputIsCorrect_thenResponseOk() {
+    public void addNewBooking_whenInputIsCorrect_thenResponseOk() {
         int userId = 1;
         when(bookingService.addNewBooking(newBookingDto, userId)).thenReturn(bookingDto);
         String result = mockMvc.perform(post("/bookings")
@@ -70,7 +70,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void save() {
+    public void save() {
         int userId = 1;
         when(bookingService.addNewBooking(newBookingDto, userId)).thenReturn(bookingDto);
         ResultActions resultActions = mockMvc.perform(post("/bookings")
@@ -80,12 +80,11 @@ class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        System.out.println(resultActions);
     }
 
     @SneakyThrows
     @Test
-    void confirmBookingRequest() {
+    public void confirmBookingRequest() {
         int userId = 1;
         int bookingId = 1;
         boolean approved = true;
@@ -99,7 +98,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void getBookingById() {
+    public void getBookingById() {
         int bookingId = 1;
         int userId = 1;
         when(bookingService.getBookingById(bookingId, userId)).thenReturn(bookingDto);
@@ -112,7 +111,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void getAllBookingsOfCurrentUser() {
+    public void getAllBookingsOfCurrentUser() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -128,7 +127,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void getAllBookingsOfAllUserItems() {
+    public void getAllBookingsOfAllUserItems() {
         int userId = 1;
         int from = 0;
         int size = 10;

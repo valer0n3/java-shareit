@@ -64,7 +64,7 @@ class BookingServiceImplementationTest {
     private Booking booking;
 
     @BeforeEach
-    public void beforeEachCreateRequests() {
+    public void beforeEach() {
         user = User.builder()
                 .id(1)
                 .name("testUser")
@@ -101,14 +101,14 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void addNewBooking_whenUserIsNotExisted_thenThrowObjectNotFoundException() {
+    public void addNewBooking_whenUserIsNotExisted_thenThrowObjectNotFoundException() {
         int userId = 1;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
         assertThrows(ObjectNotFoundException.class, () -> bookingService.addNewBooking(newBookingDto, userId));
     }
 
     @Test
-    void addNewBooking_whenItemIsNotExisted_thenThrowObjectNotFoundException() {
+    public void addNewBooking_whenItemIsNotExisted_thenThrowObjectNotFoundException() {
         int userId = 1;
         int itemId = 1;
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -117,7 +117,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void addNewBooking_whenUserIsNotItemOwner_thenThrowObjectNotFoundException() {
+    public void addNewBooking_whenUserIsNotItemOwner_thenThrowObjectNotFoundException() {
         int userId = 1;
         int itemId = 1;
         item.setOwner(user);
@@ -127,7 +127,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void addNewBooking_whenItemIsUnavailable_thenThrowIncorrectInputException() {
+    public void addNewBooking_whenItemIsUnavailable_thenThrowIncorrectInputException() {
         int userId = 5;
         int itemId = 1;
         item.setOwner(user);
@@ -138,7 +138,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void addNewBooking_whenBookingEndDateIsAfterStartDate_thenThrowIncorrectInputException() {
+    public void addNewBooking_whenBookingEndDateIsAfterStartDate_thenThrowIncorrectInputException() {
         int userId = 5;
         int itemId = 1;
         item.setOwner(user);
@@ -151,7 +151,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void addNewBooking_whenAllInputIsCorrect_thenSave() {
+    public void addNewBooking_whenAllInputIsCorrect_thenSave() {
         int userId = 5;
         int itemId = 1;
         item.setOwner(user);
@@ -168,7 +168,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void confirmBookingRequest_whenUserIsNotItemOwner_thenObjectNotFoundException() {
+    public void confirmBookingRequest_whenUserIsNotItemOwner_thenObjectNotFoundException() {
         int userId = 5;
         int bookingId = 1;
         boolean isApproved = true;
@@ -180,7 +180,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void confirmBookingRequest_whenBookingStatusIsNotEqualsToWaiting_thenIncorrectInputException() {
+    public void confirmBookingRequest_whenBookingStatusIsNotEqualsToWaiting_thenIncorrectInputException() {
         int userId = 1;
         int bookingId = 1;
         boolean isApproved = true;
@@ -193,7 +193,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void confirmBookingRequest_whenBookingStatusIsApproved_thenSaveApproved() {
+    public void confirmBookingRequest_whenBookingStatusIsApproved_thenSaveApproved() {
         int userId = 1;
         int bookingId = 1;
         boolean isApproved = true;
@@ -206,7 +206,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void confirmBookingRequest_whenBookingStatusIsRejected_thenSaveApproved() {
+    public void confirmBookingRequest_whenBookingStatusIsRejected_thenSaveApproved() {
         int userId = 1;
         int bookingId = 1;
         boolean isApproved = false;
@@ -219,7 +219,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getBookingById_whenBookerIdIsNotEqualsToUserId_thenTrowObjectNotFoundException() {
+    public void getBookingById_whenBookerIdIsNotEqualsToUserId_thenTrowObjectNotFoundException() {
         int bookingId = 1;
         int userId = 5;
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(returnedBooking));
@@ -228,7 +228,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getBookingById_whenItemOwnerIdIsNotEqualsToUserId_thenTrowObjectNotFoundException() {
+    public void getBookingById_whenItemOwnerIdIsNotEqualsToUserId_thenTrowObjectNotFoundException() {
         int bookingId = 1;
         int userId = 1;
         User booker = User.builder()
@@ -243,7 +243,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getBookingById_whenInputIsCorrect_thenReturnBookingDto() {
+    public void getBookingById_whenInputIsCorrect_thenReturnBookingDto() {
         int bookingId = 1;
         int userId = 1;
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(returnedBooking));
@@ -252,7 +252,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfCurrentUser_whenStatusIsAll_ReturnAll() {
+    public void getAllBookingsOfCurrentUser_whenStatusIsAll_ReturnAll() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -263,7 +263,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfCurrentUser_whenStatusIsCurrent_ReturnCurrent() {
+    public void getAllBookingsOfCurrentUser_whenStatusIsCurrent_ReturnCurrent() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -273,7 +273,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfCurrentUser_whenStatusIsPast_ReturnPast() {
+    public void getAllBookingsOfCurrentUser_whenStatusIsPast_ReturnPast() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -283,7 +283,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfCurrentUser_whenStatusIsFuture_ReturnFuture() {
+    public void getAllBookingsOfCurrentUser_whenStatusIsFuture_ReturnFuture() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -293,7 +293,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfCurrentUser_whenStatusIsWaiting_ReturnWaiting() {
+    public void getAllBookingsOfCurrentUser_whenStatusIsWaiting_ReturnWaiting() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -304,7 +304,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfCurrentUser_whenStatusIsRejected_ReturnRejected() {
+    public void getAllBookingsOfCurrentUser_whenStatusIsRejected_ReturnRejected() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -315,7 +315,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfAllUserItems_whenStatusIsAll_ReturnAll() {
+    public void getAllBookingsOfAllUserItems_whenStatusIsAll_ReturnAll() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -327,7 +327,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfAllUserItems_whenStatusIsCurrent_ReturnCurrent() {
+    public void getAllBookingsOfAllUserItems_whenStatusIsCurrent_ReturnCurrent() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -337,7 +337,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfAllUserItems_whenStatusIsPast_ReturnPast() {
+    public void getAllBookingsOfAllUserItems_whenStatusIsPast_ReturnPast() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -347,7 +347,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfAllUserItems_whenStatusIsFuture_ReturnFuture() {
+    public void getAllBookingsOfAllUserItems_whenStatusIsFuture_ReturnFuture() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -357,7 +357,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfAllUserItems_whenStatusIsWaiting_ReturnWaiting() {
+    public void getAllBookingsOfAllUserItems_whenStatusIsWaiting_ReturnWaiting() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -368,7 +368,7 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfAllUserItems_whenStatusIsRejected_ReturnRejected() {
+    public void getAllBookingsOfAllUserItems_whenStatusIsRejected_ReturnRejected() {
         int userId = 1;
         int from = 0;
         int size = 10;
@@ -379,10 +379,10 @@ class BookingServiceImplementationTest {
     }
 
     @Test
-    void getAllBookingsOfAllUserItems() {
+    public void getAllBookingsOfAllUserItems() {
     }
 
     @Test
-    void checkIfItemIsAvailable() {
+    public void checkIfItemIsAvailable() {
     }
 }

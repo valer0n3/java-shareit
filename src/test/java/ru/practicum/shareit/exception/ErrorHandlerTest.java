@@ -13,25 +13,25 @@ class ErrorHandlerTest {
     private ErrorHandler errorHandler;
 
     @Test
-    void incorrectValue() {
+    public void incorrectValue() {
         Exception exception = errorHandler.incorrectValue(new IncorrectInputException("testAlert"));
         assertEquals("testAlert", exception.getDescription());
     }
 
     @Test
-    void objectNotFound() {
+    public void objectNotFound() {
         Exception exception = errorHandler.objectNotFound(new ObjectNotFoundException("testAlert"));
         assertEquals("testAlert", exception.getDescription());
     }
 
     @Test
-    void duplicatedDataException() {
+    public void duplicatedDataException() {
         Exception exception = errorHandler.duplicatedDataException(new DuplicatedDataException("testAlert"));
         assertEquals("testAlert", exception.getDescription());
     }
 
     @Test
-    void unsupportedStatus() {
+    public void unsupportedStatus() {
         Exception exception = errorHandler.unsupportedStatus(new UnsupportedStatus("testAlert"));
         assertEquals("testAlert", exception.getError());
     }

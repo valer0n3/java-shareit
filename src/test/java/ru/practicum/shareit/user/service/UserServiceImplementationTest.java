@@ -44,7 +44,7 @@ class UserServiceImplementationTest {
     private ArgumentCaptor<User> userArgumentCaptor;
 
     @BeforeEach
-    public void beforeEachCreateUsers() {
+    public void beforeEach() {
         testUser1 = User.builder()
                 .id(1)
                 .name("testUser1")
@@ -73,17 +73,16 @@ class UserServiceImplementationTest {
     }
 
     @Test
-    void getUserById_whenUserFound_thenReturnUserPostDto() {
+    public void getUserById_whenUserFound_thenReturnUserPostDto() {
         int userId = 0;
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(testUser1));
         Mockito.when(userMapper.mapUserToUserPostDTO(any())).thenReturn(userPostDto);
         UserPostDto actualUserPostDto = userService.getUserById(userId);
-        System.out.println(actualUserPostDto);
         assertEquals(testUser1.getId(), actualUserPostDto.getId());
     }
 
     @Test
-    void getUserById_whenUserNotFound_thenThrowObjectNotFoundException() {
+    public void getUserById_whenUserNotFound_thenThrowObjectNotFoundException() {
         int userId = 0;
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
         ObjectNotFoundException objectNotFoundException = assertThrows(ObjectNotFoundException.class, () -> userService.getUserById(userId));
@@ -91,7 +90,7 @@ class UserServiceImplementationTest {
     }
 
     @Test
-    void createUser_whenUserCreate_thenReturnUserPostDto() {
+    public void createUser_whenUserCreate_thenReturnUserPostDto() {
         int userId = 0;
         Mockito.when(userMapper.mapUserPostDtoToUser(any())).thenReturn(testUser1);
         Mockito.when(userRepository.save(testUser1)).thenReturn(testUser1);
@@ -102,7 +101,7 @@ class UserServiceImplementationTest {
     }
 
     @Test
-    void updateUser_whenUserNotFound_thenThrowNotFoundException() {
+    public void updateUser_whenUserNotFound_thenThrowNotFoundException() {
         int userId = 0;
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
         ObjectNotFoundException objectNotFoundException = assertThrows(ObjectNotFoundException.class,
@@ -111,7 +110,7 @@ class UserServiceImplementationTest {
     }
 
     @Test
-    void updateUser_whenUserFound_thenUpdate() {
+    public void updateUser_whenUserFound_thenUpdate() {
         int userId = 0;
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(testUser1));
         Mockito.when(userMapper.mapUserToUserPatchDTO(any())).thenReturn(testUserPatchDto);
@@ -121,7 +120,7 @@ class UserServiceImplementationTest {
     }
 
     @Test
-    void updateUser_whenNameAndMailCorrect_thenUpdateNameAndEmail() {
+    public void updateUser_whenNameAndMailCorrect_thenUpdateNameAndEmail() {
         User oldUser = testUser1;
         int userId = 0;
         testNewUserPatchDto.setName("changedName");
@@ -135,7 +134,7 @@ class UserServiceImplementationTest {
     }
 
     @Test
-    void updateUser_whenNameisNullAndMailCorrect_thenUpdateOnlyMail() {
+    public void updateUser_whenNameisNullAndMailCorrect_thenUpdateOnlyMail() {
         User oldUser = testUser1;
         int userId = 0;
         testNewUserPatchDto.setName(null);
@@ -149,7 +148,7 @@ class UserServiceImplementationTest {
     }
 
     @Test
-    void updateUser_whenNameIsCorrectAndMailIsNull_thenUpdateOnlyName() {
+    public void updateUser_whenNameIsCorrectAndMailIsNull_thenUpdateOnlyName() {
         User oldUser = testUser1;
         int userId = 0;
         testNewUserPatchDto.setName("changedName");
@@ -163,14 +162,14 @@ class UserServiceImplementationTest {
     }
 
     @Test
-    void deleteUser_whenUserExists_thenDeleteSuccessfully() {
+    public void deleteUser_whenUserExists_thenDeleteSuccessfully() {
         int userId = 0;
         userService.deleteUser(userId);
         verify(userRepository).deleteById(userId);
     }
 
     @Test
-    void getAllUsers_whenUsersExists_thenReturnUserPostDtoList() {
+    public void getAllUsers_whenUsersExists_thenReturnUserPostDtoList() {
         when(userRepository.findAll()).thenReturn(Collections.emptyList());
         List<UserPostDto> usersList = userService.getAllUsers();
         verify(userRepository).findAll();

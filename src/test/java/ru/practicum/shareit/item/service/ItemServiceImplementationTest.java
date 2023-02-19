@@ -84,7 +84,7 @@ class ItemServiceImplementationTest {
     private Booking bookingNext;
 
     @BeforeEach
-    public void beforeEachCreateRequests() {
+    public void beforeEach() {
         itemDto = ItemDto.builder()
                 .id(1)
                 .name("testItemDto")
@@ -130,7 +130,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void addNewItem_whenUserAndRequestIsNotExisted_thenTrowObjectNotFoundException() {
+    public void addNewItem_whenUserAndRequestIsNotExisted_thenTrowObjectNotFoundException() {
         int userId = 0;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
         ObjectNotFoundException objectNotFoundExceptionUser =
@@ -144,11 +144,10 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void addNewItem_whenRequestEquals0_thenReturnItemWithRequestNull() {
+    public void addNewItem_whenRequestEquals0_thenReturnItemWithRequestNull() {
         int userId = 0;
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         itemDto.setRequestId(0);
-        // when(itemMapper.mapItemDtoToItem(any())).thenReturn(item);
         itemService.addNewItem(itemDto, userId);
         verify(itemRepository).save(itemArgumentCaptor.capture());
         assertEquals(itemDto.getName(), itemArgumentCaptor.getValue().getName());
@@ -159,12 +158,11 @@ class ItemServiceImplementationTest {
 
     @Test
     @MockitoSettings(strictness = Strictness.LENIENT)
-    void addNewItem_whenRequestIsnNot0_thenReturnItemWithRequestNull() {
+    public void addNewItem_whenRequestIsnNot0_thenReturnItemWithRequestNull() {
         int userId = 0;
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         itemDto.setRequestId(1);
         doReturn(Optional.of(request)).when(requestRepository).findById(itemDto.getRequestId());
-        // when(itemMapper.mapItemDtoToItem(any())).thenReturn(item);
         itemService.addNewItem(itemDto, userId);
         verify(itemRepository).save(itemArgumentCaptor.capture());
         assertEquals(itemDto.getName(), itemArgumentCaptor.getValue().getName());
@@ -174,7 +172,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void updateItem_whenItemIsNotExisted_thenThrowObjectNotFoundException() {
+    public void updateItem_whenItemIsNotExisted_thenThrowObjectNotFoundException() {
         int userId = 0;
         int itemId = 0;
         when(itemRepository.findById(itemId)).thenReturn(Optional.empty());
@@ -184,7 +182,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void updateItem_whenItemOwnerIsNotEqualUserId_thenThrowObjectNotFoundException() {
+    public void updateItem_whenItemOwnerIsNotEqualUserId_thenThrowObjectNotFoundException() {
         int userId = 0;
         int itemOwnerId = 1;
         int itemId = 1;
@@ -198,7 +196,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void updateItem_whenItemOwnerEqualsToUserIdAndNameIsNotNull_thenSaveName() {
+    public void updateItem_whenItemOwnerEqualsToUserIdAndNameIsNotNull_thenSaveName() {
         int userId = 1;
         int itemOwnerId = 1;
         int itemId = 1;
@@ -217,7 +215,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void updateItem_whenDescriptionIsNotNullAndNotBlank_thenSaveDescription() {
+    public void updateItem_whenDescriptionIsNotNullAndNotBlank_thenSaveDescription() {
         int userId = 1;
         int itemOwnerId = 1;
         int itemId = 1;
@@ -238,7 +236,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void updateItem_whenAvailableIsNotNullAndNotBlank_thenSaveSescription() {
+    public void updateItem_whenAvailableIsNotNullAndNotBlank_thenSaveSescription() {
         int userId = 1;
         int itemOwnerId = 1;
         int itemId = 1;
@@ -258,7 +256,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void updateItem_whenNameIsBlank_thenNotChangeNameWhenSave() {
+    public void updateItem_whenNameIsBlank_thenNotChangeNameWhenSave() {
         int userId = 1;
         int itemOwnerId = 1;
         int itemId = 1;
@@ -277,7 +275,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void updateItem_whenDescriptionIsBlank_thenNotChangeDescriptionwhenSave() {
+    public void updateItem_whenDescriptionIsBlank_thenNotChangeDescriptionwhenSave() {
         int userId = 1;
         int itemOwnerId = 1;
         int itemId = 1;
@@ -297,7 +295,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void getItemById_whenItemOwnerEqualsUserID_thenGetItemWithBookingDatesDto() {
+    public void getItemById_whenItemOwnerEqualsUserID_thenGetItemWithBookingDatesDto() {
         int itemId = 1;
         int userId = 1;
         user.setId(1);
@@ -308,7 +306,6 @@ class ItemServiceImplementationTest {
         when(bookingRepository.getBookingForItem(anyInt())).thenReturn(List.of(bookingLast, bookingNext));
         when(commentRepository.getCommentForItem(anyInt())).thenReturn(List.of(comment));
         ItemWithBookingDatesDto itemWithBookingDatesDto = itemService.getItemById(itemId, userId);
-        System.out.println(itemWithBookingDatesDto);
         assertEquals(item.getName(), itemWithBookingDatesDto.getName());
         List<CommentDto> expectedCommentList = List.of(commentMapper.mapCommentToCommentDto(comment));
         assertEquals(expectedCommentList, itemWithBookingDatesDto.getComments());
@@ -319,7 +316,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void getItemById_whenItemOwnerNotEqualsUserID_thenLastNextDatesAreNull() {
+    public void getItemById_whenItemOwnerNotEqualsUserID_thenLastNextDatesAreNull() {
         int itemId = 1;
         int userId = 5;
         user.setId(1);
@@ -338,7 +335,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void getAllItemsForOwner_whenInputIsCorrect_thenReturnItemWithBookingDatesDto() {
+    public void getAllItemsForOwner_whenInputIsCorrect_thenReturnItemWithBookingDatesDto() {
         int userId = 1;
         user.setId(1);
         item.setOwner(user);
@@ -348,7 +345,6 @@ class ItemServiceImplementationTest {
         when(bookingRepository.getBookingForOwner(userId)).thenReturn(List.of(bookingLast, bookingNext));
         when(commentRepository.getCommentForOwner(any())).thenReturn(List.of(comment));
         List<ItemWithBookingDatesDto> itemWithBookingDatesDtos = itemService.getAllItemsForOwner(userId);
-        System.out.println(itemWithBookingDatesDtos);
         assertEquals(item.getName(), itemWithBookingDatesDtos.get(0).getName());
         List<CommentDto> expectedCommentList = List.of(commentMapper.mapCommentToCommentDto(comment));
         assertEquals(expectedCommentList, itemWithBookingDatesDtos.get(0).getComments());
@@ -359,7 +355,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void searchItem_whenTestIsNotBlank_thenReturnSearchResults() {
+    public void searchItem_whenTestIsNotBlank_thenReturnSearchResults() {
         String searchInput = "itemName";
         when(itemRepository.searchItem(searchInput)).thenReturn(List.of(item));
         itemService.searchItem(searchInput);
@@ -367,7 +363,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void searchItem_whenTestIsBlank_thenReturnEmptyArrayList() {
+    public void searchItem_whenTestIsBlank_thenReturnEmptyArrayList() {
         String emptySearchInput = " ";
         List<ItemDto> itemDtoList = itemService.searchItem(emptySearchInput);
         verify(itemRepository, times(0)).searchItem(emptySearchInput);
@@ -375,7 +371,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void addComment_whenInputIsCorrect_thenSaveComment() {
+    public void addComment_whenInputIsCorrect_thenSaveComment() {
         int itemId = 0;
         int userId = 0;
         commentDto = CommentDto.builder()
@@ -393,7 +389,7 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    void addComment_whencheckIfUserBookedItemNotExists_thenThrowIncorrectInputException() {
+    public void addComment_whencheckIfUserBookedItemNotExists_thenThrowIncorrectInputException() {
         int itemId = 0;
         int userId = 0;
         commentDto = CommentDto.builder()

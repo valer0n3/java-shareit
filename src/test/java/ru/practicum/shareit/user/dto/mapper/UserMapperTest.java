@@ -19,7 +19,7 @@ class UserMapperTest {
     private UserPostDto newUserPostDto;
 
     @BeforeEach
-    public void beforeEachCreateRequests() {
+    public void beforeEach() {
         newUser = User.builder()
                 .id(1)
                 .name("userName")
@@ -31,19 +31,19 @@ class UserMapperTest {
     }
 
     @Test
-    void mapUserToUserPostDTO() {
+    public void mapUserToUserPostDTO() {
         UserPostDto userPostDto = userMapper.mapUserToUserPostDTO(newUser);
         assertEquals(newUser.getName(), userPostDto.getName());
     }
 
     @Test
-    void mapUserPostDtoToUser() {
+    public void mapUserPostDtoToUser() {
         User user = userMapper.mapUserPostDtoToUser(newUserPostDto);
         assertEquals(newUserPostDto.getName(), newUser.getName());
     }
 
     @Test
-    void mapUserToUserPatchDTO() {
+    public void mapUserToUserPatchDTO() {
         UserPatchDto userPatchDto = userMapper.mapUserToUserPatchDTO(newUser);
         assertEquals(newUser.getName(), userPatchDto.getName());
     }

@@ -38,7 +38,7 @@ class ItemControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    public void beforeEachCreateUsers() {
+    public void beforeEach() {
         itemDto = ItemDto.builder()
                 .id(1)
                 .name("testName")
@@ -66,7 +66,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addNewItem_whenInputIsCorrect_thenResponseOk() {
+    public void addNewItem_whenInputIsCorrect_thenResponseOk() {
         int userId = 1;
         when(itemService.addNewItem(itemDto, userId)).thenReturn(itemDto);
         String result = mockMvc.perform(post("/items")
@@ -83,7 +83,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void updateItem_whenInputIsCorrect_thenResponseOk() {
+    public void updateItem_whenInputIsCorrect_thenResponseOk() {
         int userId = 1;
         int itemId = 1;
         when(itemService.updateItem(itemPatchDto, userId, itemId)).thenReturn(itemPatchDto);
@@ -101,7 +101,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void getItemById_whenInputIsCorrect_thenResponseOk() {
+    public void getItemById_whenInputIsCorrect_thenResponseOk() {
         int itemId = 1;
         int userId = 1;
         when(itemService.getItemById(userId, itemId)).thenReturn(itemWithBookingDatesDto);
@@ -119,7 +119,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void getAllItemsForOwner_whenInputIsCorrect_thenResponseOk() {
+    public void getAllItemsForOwner_whenInputIsCorrect_thenResponseOk() {
         int userId = 1;
         List<ItemWithBookingDatesDto> itemWithBookingDatesDto1 = List.of(itemWithBookingDatesDto);
         when(itemService.getAllItemsForOwner(userId)).thenReturn(itemWithBookingDatesDto1);
@@ -137,7 +137,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void searchItem_whenInputIsCorrect_thenResponseOk() {
+    public void searchItem_whenInputIsCorrect_thenResponseOk() {
         String inputText = "test";
         List<ItemDto> itemDtoList = List.of(itemDto);
         when(itemService.searchItem(inputText)).thenReturn(itemDtoList);
@@ -153,7 +153,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addComment_whenInputIsCorrect_thenResponseOk() {
+    public void addComment_whenInputIsCorrect_thenResponseOk() {
         int itemId = 1;
         int userId = 1;
         when(itemService.addComment(commentDto, itemId, userId)).thenReturn(commentDto);

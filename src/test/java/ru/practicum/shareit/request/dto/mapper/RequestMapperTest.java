@@ -23,7 +23,7 @@ class RequestMapperTest {
     private NewRequestDto newRequestDto;
 
     @BeforeEach
-    public void beforeEachCreateRequests() {
+    public void beforeEach() {
         newRequest = Request.builder()
                 .id(1)
                 .description("newRequest")
@@ -38,19 +38,19 @@ class RequestMapperTest {
     }
 
     @Test
-    void mapNewRequestDtoToRequest() {
+    public void mapNewRequestDtoToRequest() {
         Request request = requestMapper.mapNewRequestDtoToRequest(newRequestDto);
         assertEquals(newRequestDto.getDescription(), request.getDescription());
     }
 
     @Test
-    void mapRequestToRequestDto() {
+    public void mapRequestToRequestDto() {
         RequestDto requestDto = requestMapper.mapRequestToRequestDto(newRequest);
         assertEquals(newRequest.getDescription(), requestDto.getDescription());
     }
 
     @Test
-    void mapRequestToRequestGetAllDto() {
+    public void mapRequestToRequestGetAllDto() {
         RequestGetAllDto requestGetAllDto = requestMapper.mapRequestToRequestGetAllDto(newRequest, Collections.emptyList());
         assertEquals(newRequest.getDescription(), requestGetAllDto.getDescription());
     }
