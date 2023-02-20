@@ -8,7 +8,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.ItemForRequestDto;
@@ -141,8 +140,8 @@ class RequestServiceImplementationTest {
         int size = 10;
         item.setRequest(request);
         item2.setRequest(request2);
-        PageImpl page = new PageImpl<>(List.of(request, request2));
-        when(requestRepository.findByRequestorIdIsNot(anyInt(), any(Pageable.class))).thenReturn(page);
+        // PageImpl page = new PageImpl<>(List.of(request, request2));
+        when(requestRepository.findByRequestorIdIsNot(anyInt(), any(Pageable.class))).thenReturn(List.of(request, request2));
         when(itemRepository.findAllByRequestIdIn(any())).thenReturn(List.of(item, item2));
         requestService.getOtherUsersRequests(userId, from, size);
         verify(itemRepository).findAllByRequestIdIn(any());

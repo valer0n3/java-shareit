@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -57,7 +56,7 @@ public class RequestServiceImplementation implements RequestService {
     @Override
     public List<RequestGetAllDto> getOtherUsersRequests(int userId, int from, int size) {
         Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("created").descending());
-        Page<Request> requests = requestRepository.findByRequestorIdIsNot(userId, pageWithElements);
+        List<Request> requests = requestRepository.findByRequestorIdIsNot(userId, pageWithElements);
         List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
                 .map(Request::getId)
                 .collect(Collectors.toList()));
