@@ -19,13 +19,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
+import static ru.practicum.shareit.variables.Variables.X_SHARER_USER_ID;
+
 @Validated
 @RestController
 @RequestMapping(path = "/requests")
 @AllArgsConstructor
 public class RequestController {
     private final RequestServiceImplementation requestServiceImplementation;
-    private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public RequestDto addNewRequest(@Valid @RequestBody NewRequestDto newRequestDto,

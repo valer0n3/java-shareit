@@ -19,12 +19,13 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.practicum.shareit.variables.Variables.X_SHARER_USER_ID;
+
 @RestController
 @RequestMapping("/items")
 @AllArgsConstructor
 public class ItemController {
     private final ItemService itemservice;
-    private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto addNewItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(X_SHARER_USER_ID) int userID) {

@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.variables.Variables.X_SHARER_USER_ID;
 
 @WebMvcTest(controllers = ItemController.class)
 class ItemControllerTest {
@@ -31,7 +32,6 @@ class ItemControllerTest {
     private ItemPatchDto itemPatchDto;
     private ItemWithBookingDatesDto itemWithBookingDatesDto;
     private CommentDto commentDto;
-    private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
     @Autowired
     private MockMvc mockMvc;
     @Autowired
