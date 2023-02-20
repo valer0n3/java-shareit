@@ -47,9 +47,11 @@ public class RequestServiceImplementation implements RequestService {
         checkIfUserExists(userId);
         List<Request> requests = requestRepository.findByRequestorIdOrderByCreatedDesc(userId);
         List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
-                .map(Request::getId).collect(Collectors.toList()));
+                .map(Request::getId)
+                .collect(Collectors.toList()));
         return requests.stream()
-                .map(request -> mapToRequestGetAllDto(request, items)).collect(Collectors.toList());
+                .map(request -> mapToRequestGetAllDto(request, items))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -57,9 +59,11 @@ public class RequestServiceImplementation implements RequestService {
         Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("created").descending());
         Page<Request> requests = requestRepository.findByRequestorIdIsNot(userId, pageWithElements);
         List<Item> items = itemRepository.findAllByRequestIdIn(requests.stream()
-                .map(Request::getId).collect(Collectors.toList()));
+                .map(Request::getId)
+                .collect(Collectors.toList()));
         return requests.stream()
-                .map((request -> mapToRequestGetAllDto(request, items))).collect(Collectors.toList());
+                .map((request -> mapToRequestGetAllDto(request, items)))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -69,7 +73,8 @@ public class RequestServiceImplementation implements RequestService {
                 .orElseThrow(() -> new ObjectNotFoundException(String
                         .format("Request with id: %d is not existed", requestId)));
         List<ItemForRequestDto> items = itemRepository.findAllByRequestId(requestId).stream()
-                .map(itemMapper::mapItemToItemForRequestDto).collect(Collectors.toList());
+                .map(itemMapper::mapItemToItemForRequestDto)
+                .collect(Collectors.toList());
         return requestMapper.mapRequestToRequestGetAllDto(request, items);
     }
 

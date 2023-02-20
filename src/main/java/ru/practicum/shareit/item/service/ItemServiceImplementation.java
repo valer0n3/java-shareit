@@ -74,7 +74,8 @@ public class ItemServiceImplementation implements ItemService {
         List<Item> items = itemRepository.getAllItemsForOwner(userId);
         List<Booking> booking = bookingRepository.getBookingForOwner(userId);
         List<Integer> itemIdList = items.stream()
-                .map(Item::getId).collect(Collectors.toList());
+                .map(Item::getId)
+                .collect(Collectors.toList());
         List<Comment> comment = commentRepository.getCommentForOwner(itemIdList);
         return items.stream()
                 .map(item -> addBookingAndComments(item, booking, comment, userId))
@@ -87,7 +88,8 @@ public class ItemServiceImplementation implements ItemService {
             return new ArrayList<>();
         }
         return itemRepository.searchItem(text).stream()
-                .map((itemMapper::mapItemToItemDto)).collect(Collectors.toList());
+                .map((itemMapper::mapItemToItemDto))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -152,7 +154,8 @@ public class ItemServiceImplementation implements ItemService {
         }
         List<CommentDto> itemComments = comment.stream()
                 .filter(comment1 -> comment1.getItem().getId() == (item.getId()))
-                .map(commentMapper::mapCommentToCommentDto).collect(Collectors.toList());
+                .map(commentMapper::mapCommentToCommentDto)
+                .collect(Collectors.toList());
         BookingOwnerDTO lastBookingDateMapped = bookingMapper.mapBookingToBookingOwnerDTO(lastBookingDate.orElse(null));
         BookingOwnerDTO nextBookingDateMapped = bookingMapper.mapBookingToBookingOwnerDTO(nextBookingDate.orElse(null));
         return itemMapper
