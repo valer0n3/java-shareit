@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplementationTest {
     private User testUser1;
-    private User testUser2;
     private UserPostDto userPostDto;
     private UserPatchDto testUserPatchDto;
     private UserPatchDto testNewUserPatchDto;
@@ -49,11 +48,6 @@ class UserServiceImplementationTest {
                 .id(1)
                 .name("testUser1")
                 .email("testUser1@email.ru")
-                .build();
-        testUser2 = User.builder()
-                .id(1)
-                .name("testUser2")
-                .email("testUser2@email.ru")
                 .build();
         userPostDto = UserPostDto.builder()
                 .id(1)

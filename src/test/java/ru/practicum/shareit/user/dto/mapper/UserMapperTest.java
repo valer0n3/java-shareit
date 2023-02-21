@@ -39,7 +39,7 @@ class UserMapperTest {
     @Test
     public void mapUserPostDtoToUser() {
         User user = userMapper.mapUserPostDtoToUser(newUserPostDto);
-        assertEquals(newUserPostDto.getName(), newUser.getName());
+        assertEquals(newUserPostDto.getName(), user.getName());
     }
 
     @Test

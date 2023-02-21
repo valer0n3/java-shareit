@@ -10,12 +10,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
-import ru.practicum.shareit.item.dto.ItemForRequestDto;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.NewRequestDto;
-import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.mapper.RequestMapper;
 import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.request.storage.RequestRepository;
@@ -51,21 +49,15 @@ class RequestServiceImplementationTest {
     private ItemMapper itemMapper;
     @Captor
     private ArgumentCaptor<Request> requestArgumentCaptor;
-    private RequestDto requestDto;
     private NewRequestDto newRequestDto;
     private Request request;
     private Request request2;
     private User user;
     private Item item;
     private Item item2;
-    private ItemForRequestDto itemForRequestDto;
 
     @BeforeEach
     public void beforeEach() {
-        requestDto = RequestDto.builder()
-                .id(1)
-                .description("testDescription")
-                .build();
         newRequestDto = NewRequestDto.builder()
                 .description("newTestDescription")
                 .build();
@@ -89,9 +81,6 @@ class RequestServiceImplementationTest {
         item2 = Item.builder()
                 .id(1)
                 .name("testItem2")
-                .build();
-        itemForRequestDto = ItemForRequestDto.builder()
-                .requestId(1)
                 .build();
     }
 

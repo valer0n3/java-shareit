@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.dto.UserPostDto;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImplementation;
 
 import java.util.List;
@@ -37,27 +35,12 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private UserServiceImplementation userService;
-    @InjectMocks
-    private UserController userController;
-    private User testUser1;
-    private User testUser2;
     private UserPostDto userPostDto;
     private UserPostDto userPostDto2;
-    private UserPatchDto testUserPatchDto;
     private UserPatchDto testNewUserPatchDto;
 
     @BeforeEach
     public void beforeEach() {
-        testUser1 = User.builder()
-                .id(1)
-                .name("testUser1")
-                .email("testUser1@email.ru")
-                .build();
-        testUser2 = User.builder()
-                .id(1)
-                .name("testUser2")
-                .email("testUser2@email.ru")
-                .build();
         userPostDto = UserPostDto.builder()
                 .id(1)
                 .name("testUser1")
@@ -67,11 +50,6 @@ class UserControllerTest {
                 .id(2)
                 .name("testUser2")
                 .email("testUser2@email.ru")
-                .build();
-        testUserPatchDto = UserPatchDto.builder()
-                .id(1)
-                .name("testUser1")
-                .email("testUser1@email.ru")
                 .build();
         testNewUserPatchDto = UserPatchDto.builder()
                 .id(1)

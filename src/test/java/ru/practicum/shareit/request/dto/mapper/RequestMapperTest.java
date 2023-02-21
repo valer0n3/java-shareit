@@ -19,16 +19,11 @@ class RequestMapperTest {
     @InjectMocks
     private RequestMapperImpl requestMapper;
     private Request newRequest;
-    private RequestGetAllDto newRequestGetAllDto;
     private NewRequestDto newRequestDto;
 
     @BeforeEach
     public void beforeEach() {
         newRequest = Request.builder()
-                .id(1)
-                .description("newRequest")
-                .build();
-        newRequestGetAllDto = RequestGetAllDto.builder()
                 .id(1)
                 .description("newRequest")
                 .build();
