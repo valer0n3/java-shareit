@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,14 +17,17 @@ import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
+import static ru.practicum.shareit.variables.Variables.X_SHARER_USER_ID;
+
+@Validated
 @RestController
 @RequestMapping(path = "/bookings")
 @AllArgsConstructor
 public class BookingController {
     private final BookingService bookingService;
-    private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public BookingDto addNewBooking(@Valid @RequestBody NewBookingDto newBookingDto,
@@ -46,13 +50,18 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getAllBookingsOfCurrentUser(@RequestHeader(X_SHARER_USER_ID) int userId,
-                                                        @RequestParam(defaultValue = "all") String state) {
-        return bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state));
+                                                        @RequestParam(defaultValue = "all") String state,
+                                                        @RequestParam(defaultValue = "0") @Min(0) int from,
+                                                        @RequestParam(defaultValue = "10") @Min(1) int size) {
+        return bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state),
+                from, size);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getAllBookingsOfAllUserItems(@RequestHeader(X_SHARER_USER_ID) int userId,
-                                                         @RequestParam(defaultValue = "all") String state) {
-        return bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state));
+    public List<BookingDto> getAllBookingsOfAllUserItems(@Validated @RequestHeader(X_SHARER_USER_ID) int userId,
+                                                         @RequestParam(defaultValue = "all") String state,
+                                                         @RequestParam(defaultValue = "0") @Min(0) int from,
+                                                         @RequestParam(defaultValue = "10") @Min(1) int size) {
+        return bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state), from, size);
     }
 }

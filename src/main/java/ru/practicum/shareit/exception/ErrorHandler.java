@@ -32,8 +32,8 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Exception unsupportedStatus(final UnsupportedStatus incorrectInputException) {
-        log.warn("Error 400: {}", incorrectInputException.getMessage());
-        return Exception.builder().error(incorrectInputException.getMessage()).build();
+    public Exception unsupportedStatus(final UnsupportedStatus unsupportedStatus) {
+        log.warn("Error 400: {}", unsupportedStatus.getMessage());
+        return Exception.builder().error(unsupportedStatus.getMessage()).build();
     }
 }

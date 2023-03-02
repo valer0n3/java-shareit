@@ -1,6 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
@@ -48,7 +52,7 @@ public class BookingServiceImplementation implements BookingService {
         checkIfUserIsNotItemOwner(userId, booking.getItem().getOwner().getId());
         checkIfBookingStatusIsWaiting(booking);
         booking.setStatus(approveBookingOrReject(isApproved));
-        return getBookingDto(bookingRepository.save(booking));
+        return getBookingDto(booking);
     }
 
     @Override
@@ -59,10 +63,12 @@ public class BookingServiceImplementation implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingsOfCurrentUser(int userId, BookingStatusEnum state) {
+    public List<BookingDto> getAllBookingsOfCurrentUser(int userId, BookingStatusEnum state, int from, int size) {
         getUserById(userId);
         if (state.equals(BookingStatusEnum.ALL)) {
-            return getListBookingDTO(bookingRepository.getAllBookingsOfCurrentUser(userId));
+            Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("start").descending());
+            Page<Booking> bookings = bookingRepository.findByBookerId(userId, pageWithElements);
+            return getPageBookingDTO(bookings);
         } else if (state.equals(BookingStatusEnum.CURRENT)) {
             return getListBookingDTO(bookingRepository.getCurrentBookingsOfCurrentUser(userId));
         } else if (state.equals(BookingStatusEnum.PAST)) {
@@ -78,10 +84,11 @@ public class BookingServiceImplementation implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingsOfAllUserItems(int userId, BookingStatusEnum state) {
+    public List<BookingDto> getAllBookingsOfAllUserItems(int userId, BookingStatusEnum state, int from, int size) {
         getUserById(userId);
         if (state.equals(BookingStatusEnum.ALL)) {
-            return getListBookingDTO(bookingRepository.getAllBookingsOfItemsOwner(userId));
+            Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("start").descending());
+            return getPageBookingDTO(bookingRepository.findByItemOwnerId(userId, pageWithElements));
         } else if (state.equals(BookingStatusEnum.CURRENT)) {
             return getListBookingDTO(bookingRepository.getCurrentBookingsOfItemsOwner(userId));
         } else if (state.equals(BookingStatusEnum.PAST)) {
@@ -120,7 +127,7 @@ public class BookingServiceImplementation implements BookingService {
         }
     }
 
-    public void checkIfItemIsAvailable(Item item) {
+    private void checkIfItemIsAvailable(Item item) {
         if (!item.getAvailable()) {
             throw new IncorrectInputException("Item is unavailable");
         }
@@ -164,6 +171,12 @@ public class BookingServiceImplementation implements BookingService {
     }
 
     private List<BookingDto> getListBookingDTO(List<Booking> booking) {
+        return booking.stream()
+                .map(bookingMapper::mapBookingToBookingDTO)
+                .collect(Collectors.toList());
+    }
+
+    private List<BookingDto> getPageBookingDTO(Page<Booking> booking) {
         return booking.stream()
                 .map(bookingMapper::mapBookingToBookingDTO)
                 .collect(Collectors.toList());
