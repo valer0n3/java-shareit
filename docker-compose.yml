@@ -37,4 +37,4 @@ services:
     environment:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=Huawei12#$
+      - POSTGRES_PASSWORD=Huawei12#$$
