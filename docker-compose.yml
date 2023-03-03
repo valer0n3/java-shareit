@@ -24,14 +24,11 @@ services:
       - SPRING.DATASOURCE.PASSWORD=Huawei12#$$
     volumes:
       - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/timezone:ro
 
   db:
     image: postgres:13.7-alpine
     volumes:
       - /var/lib/postgresql/data/
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/timezone:ro
     ports:
       - "6541:5432"
     environment:
