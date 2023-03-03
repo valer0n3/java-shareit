@@ -8,9 +8,7 @@ services:
       - server
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/timezone:ro
+
 
   server:
     build: ./server
@@ -22,8 +20,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
       - SPRING.DATASOURCE.USERNAME=postgres
       - SPRING.DATASOURCE.PASSWORD=Huawei12#$$
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
+
 
   db:
     image: postgres:13.7-alpine
