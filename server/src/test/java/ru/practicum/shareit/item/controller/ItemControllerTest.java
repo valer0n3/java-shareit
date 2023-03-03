@@ -36,6 +36,10 @@ class ItemControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @MockBean
+    private ItemServiceImplementation itemService;
+    @InjectMocks
+    private ItemController itemController;
 
     @BeforeEach
     public void beforeEach() {
@@ -58,11 +62,6 @@ class ItemControllerTest {
                 .text("testText")
                 .build();
     }
-
-    @MockBean
-    private ItemServiceImplementation itemService;
-    @InjectMocks
-    private ItemController itemController;
 
     @SneakyThrows
     @Test

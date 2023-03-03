@@ -34,6 +34,10 @@ class RequestControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @MockBean
+    private RequestServiceImplementation requestService;
+    @InjectMocks
+    private RequestController requestController;
 
     @BeforeEach
     public void beforeEach() {
@@ -50,11 +54,6 @@ class RequestControllerTest {
                 .id(2)
                 .build();
     }
-
-    @MockBean
-    private RequestServiceImplementation requestService;
-    @InjectMocks
-    private RequestController requestController;
 
     @SneakyThrows
     @Test

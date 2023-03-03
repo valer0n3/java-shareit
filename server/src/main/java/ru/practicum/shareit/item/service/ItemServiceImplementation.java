@@ -25,7 +25,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -84,9 +83,9 @@ public class ItemServiceImplementation implements ItemService {
 
     @Override
     public List<ItemDto> searchItem(String text) {
-        if (text.isBlank()) {
+ /*       if (text.isBlank()) {
             return new ArrayList<>();
-        }
+        }*/
         return itemRepository.searchItem(text).stream()
                 .map((itemMapper::mapItemToItemDto))
                 .collect(Collectors.toList());

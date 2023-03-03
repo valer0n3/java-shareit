@@ -17,6 +17,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 
 import javax.validation.Valid;
+import java.util.Collections;
 
 import static ru.practicum.shareit.variables.Variables.X_SHARER_USER_ID;
 
@@ -25,7 +26,6 @@ import static ru.practicum.shareit.variables.Variables.X_SHARER_USER_ID;
 @AllArgsConstructor
 public class ItemController {
     private final ItemClient itemClient;
-    ;
 
     @PostMapping
     public ResponseEntity<Object> addNewItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(X_SHARER_USER_ID) int userID) {
@@ -52,6 +52,9 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<Object> searchItem(@RequestParam String text) {
+        if (text.isBlank()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
         return itemClient.searchItem(text);
     }
 

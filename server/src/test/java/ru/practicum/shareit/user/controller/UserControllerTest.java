@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -71,17 +70,6 @@ class UserControllerTest {
                 .getContentAsString();
         assertEquals(objectMapper.writeValueAsString(userPostDto), result);
         verify(userService).createUser(userPostDto);
-    }
-
-    @SneakyThrows
-    @Test
-    public void createUser_whenUserIsNotValid_thenReturnBadRequest() {
-        userPostDto.setName(null);
-        mockMvc.perform(post("/users")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(userPostDto)))
-                .andExpect(status().isBadRequest());
-        verify(userService, never()).createUser(userPostDto);
     }
 
     @SneakyThrows

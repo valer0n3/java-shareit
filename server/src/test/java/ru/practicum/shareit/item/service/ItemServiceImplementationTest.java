@@ -363,14 +363,6 @@ class ItemServiceImplementationTest {
     }
 
     @Test
-    public void searchItem_whenTestIsBlank_thenReturnEmptyArrayList() {
-        String emptySearchInput = " ";
-        List<ItemDto> itemDtoList = itemService.searchItem(emptySearchInput);
-        verify(itemRepository, times(0)).searchItem(emptySearchInput);
-        assertEquals(0, itemDtoList.size());
-    }
-
-    @Test
     public void addComment_whenInputIsCorrect_thenSaveComment() {
         int itemId = 0;
         int userId = 0;

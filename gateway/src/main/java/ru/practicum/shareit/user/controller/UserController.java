@@ -15,7 +15,6 @@ import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.dto.UserPostDto;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -30,12 +29,12 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable int id) {
-       return userClient.deleteUser(id);
+        return userClient.deleteUser(id);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updateUser(@Valid @PathVariable int id,
-                                   @RequestBody UserPatchDto userPatchDto) {
+                                             @RequestBody UserPatchDto userPatchDto) {
         return userClient.updateUser(userPatchDto, id);
     }
 

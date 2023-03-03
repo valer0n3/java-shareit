@@ -16,7 +16,6 @@ import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDatesDto;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static ru.practicum.shareit.variables.Variables.X_SHARER_USER_ID;
@@ -28,7 +27,7 @@ public class ItemController {
     private final ItemService itemservice;
 
     @PostMapping
-    public ItemDto addNewItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(X_SHARER_USER_ID) int userID) {
+    public ItemDto addNewItem(@RequestBody ItemDto itemDto, @RequestHeader(X_SHARER_USER_ID) int userID) {
         return itemservice.addNewItem(itemDto, userID);
     }
 
@@ -56,7 +55,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@Valid @RequestBody CommentDto commentDto,
+    public CommentDto addComment(@RequestBody CommentDto commentDto,
                                  @PathVariable int itemId,
                                  @RequestHeader(X_SHARER_USER_ID) int userId) {
         return itemservice.addComment(commentDto, itemId, userId);

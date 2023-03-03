@@ -16,13 +16,10 @@ import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 import static ru.practicum.shareit.variables.Variables.X_SHARER_USER_ID;
 
-@Validated
 @RestController
 @RequestMapping(path = "/bookings")
 @AllArgsConstructor
@@ -30,7 +27,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDto addNewBooking(@Valid @RequestBody NewBookingDto newBookingDto,
+    public BookingDto addNewBooking(@RequestBody NewBookingDto newBookingDto,
                                     @RequestHeader(X_SHARER_USER_ID) int userId) {
         return bookingService.addNewBooking(newBookingDto, userId);
     }
@@ -51,8 +48,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getAllBookingsOfCurrentUser(@RequestHeader(X_SHARER_USER_ID) int userId,
                                                         @RequestParam(defaultValue = "all") String state,
-                                                        @RequestParam(defaultValue = "0") @Min(0) int from,
-                                                        @RequestParam(defaultValue = "10") @Min(1) int size) {
+                                                        @RequestParam(defaultValue = "0") int from,
+                                                        @RequestParam(defaultValue = "10") int size) {
         return bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state),
                 from, size);
     }
@@ -60,8 +57,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingsOfAllUserItems(@Validated @RequestHeader(X_SHARER_USER_ID) int userId,
                                                          @RequestParam(defaultValue = "all") String state,
-                                                         @RequestParam(defaultValue = "0") @Min(0) int from,
-                                                         @RequestParam(defaultValue = "10") @Min(1) int size) {
+                                                         @RequestParam(defaultValue = "0") int from,
+                                                         @RequestParam(defaultValue = "10") int size) {
         return bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state), from, size);
     }
 }
