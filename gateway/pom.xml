@@ -7,9 +7,17 @@
         <artifactId>shareit</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+
+
     <artifactId>shareit-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>ShareIt Gateway</name>
+
     <dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
     </dependencies>
 </project>
