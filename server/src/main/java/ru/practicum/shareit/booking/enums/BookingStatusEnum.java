@@ -12,11 +12,11 @@ public enum BookingStatusEnum {
     PAST,
     FUTURE;
 
-    public static BookingStatusEnum checkIfStatusIsIncorrect(String state) {
+/*    public static BookingStatusEnum checkIfStatusIsIncorrect(String state) {
         try {
             return BookingStatusEnum.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new UnsupportedStatus(String.format("Unknown state: %s", state));
         }
-    }
+    }*/
 }
