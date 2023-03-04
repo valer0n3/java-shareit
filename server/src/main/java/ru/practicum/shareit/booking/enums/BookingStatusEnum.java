@@ -1,7 +1,5 @@
 package ru.practicum.shareit.booking.enums;
 
-import ru.practicum.shareit.exception.UnsupportedStatus;
-
 public enum BookingStatusEnum {
     WAITING,
     APPROVED,

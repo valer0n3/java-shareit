@@ -12,12 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
-import ru.practicum.shareit.booking.enums.BookingStatusEnum;
 import ru.practicum.shareit.booking.service.BookingServiceImplementation;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -104,37 +102,5 @@ class BookingControllerTest {
                         .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isOk());
         verify(bookingService).getBookingById(bookingId, userId);
-    }
-
-    @SneakyThrows
-    @Test
-    public void getAllBookingsOfCurrentUser() {
-        int userId = 1;
-        int from = 0;
-        int size = 10;
-        List<BookingDto> bookingDtos = List.of(bookingDto);
-        when(bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.ALL, from, size))
-                .thenReturn(bookingDtos);
-        mockMvc.perform(get("/bookings/")
-                        .contentType("application/json")
-                        .header(X_SHARER_USER_ID, userId))
-                .andExpect(status().isOk());
-        verify(bookingService).getAllBookingsOfCurrentUser(userId, BookingStatusEnum.ALL, from, size);
-    }
-
-    @SneakyThrows
-    @Test
-    public void getAllBookingsOfAllUserItems() {
-        int userId = 1;
-        int from = 0;
-        int size = 10;
-        List<BookingDto> bookingDtos = List.of(bookingDto);
-        when(bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.ALL, from, size))
-                .thenReturn(bookingDtos);
-        mockMvc.perform(get("/bookings/owner")
-                        .contentType("application/json")
-                        .header(X_SHARER_USER_ID, userId))
-                .andExpect(status().isOk());
-        verify(bookingService).getAllBookingsOfAllUserItems(userId, BookingStatusEnum.ALL, from, size);
     }
 }

@@ -50,7 +50,7 @@ public class BookingController {
                                                         @RequestParam(defaultValue = "all") String state,
                                                         @RequestParam(defaultValue = "0") int from,
                                                         @RequestParam(defaultValue = "10") int size) {
-        return bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state),
+        return bookingService.getAllBookingsOfCurrentUser(userId, BookingStatusEnum.valueOf(state),
                 from, size);
     }
 
@@ -59,6 +59,6 @@ public class BookingController {
                                                          @RequestParam(defaultValue = "all") String state,
                                                          @RequestParam(defaultValue = "0") int from,
                                                          @RequestParam(defaultValue = "10") int size) {
-        return bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.checkIfStatusIsIncorrect(state), from, size);
+        return bookingService.getAllBookingsOfAllUserItems(userId, BookingStatusEnum.valueOf(state), from, size);
     }
 }
